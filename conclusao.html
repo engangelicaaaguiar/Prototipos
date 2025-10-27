@@ -1,12 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tudo pronto!</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-content">
+        <a href="index.html" class="back-btn">←</a>
+        <h1>Tudo pronto!</h1>
+    </div>
+</header>
+
+<!-- CONTEÚDO -->
+<div class="container">
+    <h2 id="welcome-name"></h2>
+
+    <p class="subtitle">
+        Seu prontuário e agendamentos estão na palma da sua mão.
+    </p>
+
+    <button class="btn btn-primary" onclick="goToSchedule()">Agendar minha 1ª consulta</button>
+
+    <button class="btn btn-secondary" onclick="alert('Benefícios em breve!')">
+        Ver meus benefícios
+    </button>
+
+    <p class="note">
+        Você pode ativar biometria nas configurações a qualquer momento.
+    </p>
+</div>
+
 <script>
-  // Buscar nome salvo no cadastro
-  const nomeCompleto = localStorage.getItem('angel.nome') || "";
-  const primeiroNome = nomeCompleto.split(" ")[0];
+    // ✅ Recupera o nome salvo no localStorage
+    const fullName = localStorage.getItem("fullName") || "Usuário";
+    const firstName = fullName.split(" ")[0]; // pega somente o primeiro nome
 
-  // Inserir dinamicamente no texto final
-  const titulo = document.getElementById("final-nome");
-  if (titulo) titulo.innerText = primeiroNome + "!";
+    document.getElementById("welcome-name").innerText = `Tudo pronto, ${firstName}!`;
 
-  console.log("onboarding_complete_view", {nome: primeiroNome});
+    // ✅ CTA principal
+    function goToSchedule(){
+        alert("Navegar para tela de agendamento");
+        // quando tiver a tela real substituímos por:
+        // window.location.href = "agendar.html";
+    }
 </script>
+
+</body>
+</html>
 
