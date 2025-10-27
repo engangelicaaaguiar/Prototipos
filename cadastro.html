@@ -17,29 +17,24 @@
     <h1>Atualize seus dados</h1>
     <p class="lead">Confirme e atualize seus dados para ativar sua conta.</p>
 
-    <!-- Nome e sobrenome -->
     <label for="nome">Nome completo</label>
     <input id="nome" type="text" placeholder="Seu nome completo" class="input">
-    <div id="err-nome" class="helper">Informe nome e sobrenome.</div>
+    <div id="err-nome" class="helper">Digite nome e sobrenome.</div>
 
-    <!-- CPF readonly -->
     <label for="cpf">CPF</label>
     <input id="cpf" type="text" class="input" readonly>
 
-    <!-- Data de nascimento -->
     <label for="nasc">Data de nascimento</label>
-    <input id="nasc" type="text" placeholder="DD/MM/AAAA" class="input">
-    <div id="err-nasc" class="helper">Informe uma data válida.</div>
+    <input id="nasc" type="text" placeholder="DD/MM/AAAA" class="input" maxlength="10">
+    <div id="err-nasc" class="helper">Informe uma data válida (DD/MM/AAAA).</div>
 
-    <!-- Telefone -->
     <label for="phone">Telefone celular</label>
     <input id="phone" type="text" placeholder="(99) 99999-9999" class="input">
-    <div id="err-phone" class="helper">Telefone inválido.</div>
+    <div id="err-phone" class="helper">Telefone inválido. Use: (99) 99999-9999</div>
 
-    <!-- Email opcional -->
     <label for="email">E-mail (opcional)</label>
     <input id="email" type="email" placeholder="voce@email.com" class="input">
-    <div id="err-email" class="helper">Formato de e-mail inválido.</div>
+    <div id="err-email" class="helper">E-mail inválido.</div>
 
     <button id="btn-next" class="btn btn-primary" disabled>Continuar</button>
   </div>
@@ -59,14 +54,17 @@
   const email = document.getElementById('email');
   const btn = document.getElementById('btn-next');
 
+  // Carregar CPF salvo na tela anterior
   cpf.value = localStorage.getItem('angel.cpf') || '';
 
+  const reNome = /^[A-Za-zÀ-ÿ]{2,}\s+[A-Za-zÀ-ÿ]{2,}(\s+[A-Za-zÀ-ÿ]{2,})*$/;
+
   function validate() {
-    // Nome e Sobrenome
-    const nomeOK = nome.value.trim().split(' ').length >= 2;
+    // Nome completo (mín. 2 palavras)
+    const nomeOK = reNome.test(nome.value.trim());
     document.getElementById('err-nome').classList.toggle('show', !nomeOK);
 
-    // Data válida
+    // Data
     nasc.value = maskDate(nasc.value);
     const nascOK = dateIsValid(nasc.value);
     document.getElementById('err-nasc').classList.toggle('show', !nascOK);
@@ -76,9 +74,8 @@
     const phoneOK = phoneIsValid(phone.value);
     document.getElementById('err-phone').classList.toggle('show', !phoneOK);
 
-    // Email opcional se preenchido
-    const emailFilled = email.value.length > 0;
-    const emailOK = !emailFilled || /\S+@\S+\.\S+/.test(email.value);
+    // Email opcional
+    const emailOK = email.value === '' || /\S+@\S+\.\S+/.test(email.value);
     document.getElementById('err-email').classList.toggle('show', !emailOK);
 
     btn.disabled = !(nomeOK && nascOK && phoneOK && emailOK);
@@ -92,12 +89,13 @@
   btn.addEventListener('click', () => {
     if (btn.disabled) return;
 
-    localStorage.setItem('angel.nome', nome.value);
+    localStorage.setItem('angel.nome', nome.value.trim());
     localStorage.setItem('angel.nasc', nasc.value);
     localStorage.setItem('angel.phone', phone.value);
     localStorage.setItem('angel.email', email.value);
 
     console.log('onboarding_profile_submit', {valid: true});
+
     location.href = 'otp.html';
   });
 
