@@ -1,40 +1,220 @@
-<!-- ⭐⭐⭐ GRID PRINCIPAL COM FOTOS ATUALIZADAS ⭐⭐⭐ -->
-<div class="grid">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angel Telemed — Início</title>
 
-  <!-- Agendar consulta -->
-  <div class="card-hero" data-modal="m-agendar">
-    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1606813902914-5f8f9f0f4aa0?auto=format&fit=crop&w=1200&q=80');"></div>
-    <div class="label"><span class="badge">🩺 Agendar consulta</span></div>
+<style>
+/* ========= Design System Premium ========= */
+
+:root{
+  --brand-blue:#00357A;
+  --brand-blue-dark:#022A60;
+  --brand-green:#00A56F;
+  --ink:#0D0F12;
+  --muted:#708195;
+  --bg:#F6FAFF;
+  --card:#FFFFFF;
+  --shadow:0 12px 28px rgba(13,15,18,.08);
+  --radius:18px;
+  --spacing:16px;
+}
+
+*{box-sizing:border-box;font-family: 'Arial', sans-serif;}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+}
+a{text-decoration:none;color:inherit}
+
+/* App Container */
+.app{
+  max-width:420px;margin:0 auto;min-height:100vh;
+  padding-bottom:70px;
+}
+
+/* Topbar */
+.topbar{
+  background:var(--brand-blue);color:#fff;padding:20px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-weight:600;font-size:18px;
+}
+.topbar .hello{font-size:16px;opacity:.9}
+
+/* Greeting */
+.greeting{padding:var(--spacing);}
+.greeting h1{margin:0 0 4px;font-size:24px;color:var(--brand-blue-dark);}
+.greeting p{margin:0;color:var(--muted);font-size:15px}
+
+/* GRID CARDS */
+.grid{
+  padding:0 var(--spacing);
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+
+.card{
+  height:130px;border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);position:relative;cursor:pointer;
+}
+.card .bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+}
+.card::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.65));z-index:1;
+}
+.card span{
+  position:absolute;bottom:12px;left:12px;right:12px;
+  color:#fff;font-weight:600;z-index:2;font-size:14px;
+}
+
+/* Section Titles */
+.section{padding:var(--spacing) var(--spacing) 8px;font-weight:700;
+  font-size:18px;color:var(--brand-blue-dark);}
+.link{color:var(--brand-blue);font-size:14px;font-weight:600;}
+
+/* Próxima consulta card */
+.appointment{
+  background:var(--card);margin:0 var(--spacing);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  display:flex;gap:12px;align-items:center;
+  padding:14px;margin-top:5px;
+}
+.avatar{
+  width:60px;height:60px;border-radius:14px;background-size:cover;background-position:center;
+}
+.meta .title{margin:0;font-weight:700;font-size:15px;color:var(--ink);}
+.meta .sub{margin:0;color:var(--muted);font-size:13px;}
+
+.btn{
+  padding:9px 14px;font-size:13px;border-radius:12px;
+  cursor:pointer;font-weight:600;
+}
+.btn-outline{
+  background:transparent;border:2px solid var(--brand-blue);
+  color:var(--brand-blue);
+}
+
+/* Benefícios */
+.benefit{
+  background:var(--card);margin:12px var(--spacing);
+  border-radius:var(--radius);padding:14px;display:flex;
+  align-items:center;gap:12px;box-shadow:var(--shadow);
+}
+.ic-benefit{
+  background:var(--brand-green);width:46px;height:46px;
+  border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:22px;color:#fff;
+}
+.benefit .txt .t{margin:0;font-size:16px;font-weight:700;}
+.benefit .txt .s{margin:0;font-size:13px;color:var(--muted);}
+
+/* Bottom Navigation */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;
+  display:flex;justify-content:space-around;padding:8px 0;
+  border-top:1px solid #ddd;
+}
+.nav a{
+  color:var(--muted);font-size:12px;font-weight:600;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.nav a.active{color:var(--brand-blue);}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="topbar">
+    <div>Angel Telemed</div>
+    <div class="hello" id="hello-name">Olá!</div>
   </div>
 
-  <!-- Atendimento 24h -->
-  <div class="card-hero" data-modal="m-24h">
-    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1580281658625-78e8c976f9d8?auto=format&fit=crop&w=1200&q=80');"></div>
-    <div class="label"><span class="badge">🚑 Atendimento 24h</span></div>
+  <!-- GREETING -->
+  <div class="greeting">
+    <h1 id="name-greeting">Olá 👋</h1>
+    <p>Como podemos cuidar de você hoje?</p>
   </div>
 
-  <!-- Trilha do cuidado -->
-  <div class="card-hero" data-modal="m-trilha">
-    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554284126-aa88f22d8b72?auto=format&fit=crop&w=1200&q=80');"></div>
-    <div class="label"><span class="badge">❤️ Trilha do cuidado</span></div>
+  <!-- GRID CARDS -->
+  <div class="grid">
+
+    <div class="card">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1606813902914-5f8f9f0f4aa0?auto=format&w=1200');"></div>
+      <span>🩺 Agendar consulta</span>
+    </div>
+
+    <div class="card">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1580281658625-78e8c976f9d8?auto=format&w=1200');"></div>
+      <span>🚑 Atendimento 24h</span>
+    </div>
+
+    <div class="card">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554284126-aa88f22d8b72?auto=format&w=1200');"></div>
+      <span>❤️ Trilha do cuidado</span>
+    </div>
+
+    <div class="card">
+      <div class="bg" style="background-image:url('https://i.imgur.com/lXtvojV.jpg');"></div>
+      <span>💬 WhatsApp</span>
+    </div>
+
   </div>
 
-  <!-- WhatsApp -->
-  <div class="card-hero" data-modal="m-whats">
-    <div class="bg" style="background-image:url('https://i.imgur.com/lXtvojV.jpg');"></div>
-    <div class="label"><span class="badge">💬 WhatsApp</span></div>
+  <!-- PRÓXIMA CONSULTA -->
+  <div class="section">Próxima consulta</div>
+
+  <div class="appointment">
+    <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&w=1200');"></div>
+    <div class="meta">
+      <p class="title">Dra. Marina Sousa • Clínica Geral</p>
+      <p class="sub">Hoje, 19:30 • Teleconsulta</p>
+    </div>
+    <button class="btn-outline btn">Detalhes</button>
+  </div>
+
+  <!-- BENEFÍCIOS -->
+  <div class="section">Benefícios</div>
+
+  <div class="benefit">
+    <div class="ic-benefit">💊</div>
+    <div class="txt">
+      <p class="t">Descontos em farmácias</p>
+      <p class="s">Aproveite até 60%</p>
+    </div>
+  </div>
+
+  <div class="benefit">
+    <div class="ic-benefit">🧪</div>
+    <div class="txt">
+      <p class="t">Exames e Consultas</p>
+      <p class="s">Rede ampla e preço justo</p>
+    </div>
   </div>
 
 </div>
 
-<!-- ⭐⭐⭐ CARTÃO DA CONSULTA COM IMAGEM FEMININA ⭐⭐⭐ -->
+<!-- MENU INFERIOR -->
+<nav class="nav">
+  <a class="active">
+    <span>🏠</span>Início
+  </a>
+  <a><span>🗓️</span>Consultas</a>
+  <a><span>🎯</span>Metas</a>
+  <a><span>👤</span>Perfil</a>
+</nav>
 
-<div class="appointment">
-  <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=800&q=80');"></div>
-  <div class="meta">
-    <p class="title">Dra. Marina Sousa • Clínica Geral</p>
-    <p class="sub">Hoje, 19:30 • Teleconsulta</p>
-  </div>
-  <button class="btn btn-outline" onclick="openModal('m-consulta')">Detalhes</button>
-</div>
+<script>
+// Saudação personalizada com nome do localStorage
+(function(){
+  const nome = localStorage.getItem("angel.nome") || "você";
+  const primeiro = nome.split(" ")[0];
+  document.getElementById("hello-name").textContent = "Olá, " + primeiro;
+  document.getElementById("name-greeting").textContent = "Olá, " + primeiro + " ✨";
+})();
+</script>
 
+</body>
+</html>
