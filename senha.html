@@ -6,11 +6,25 @@
 <title>Angel Telemed — Criar senha</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-  .error { color:#c0392b; font-size:14px; margin-top:8px; display:none; }
-  .show { display:block; }
-  .eye { cursor:pointer; width:26px; height:26px; }
-  .password-box { position:relative; }
-  .password-box img { position:absolute; right:12px; top:12px; }
+  .error {
+    color: #c0392b;
+    font-size: 14px;
+    margin-top: 6px;
+    display: none;
+  }
+  .show { display: block; }
+  .password-box {
+    position: relative;
+    width: 100%;
+  }
+  .eye {
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
 </style>
 </head>
 <body>
@@ -22,49 +36,57 @@
   </div>
 
   <div class="main">
+
     <p>Uma senha protege seus dados de acesso.</p>
 
-    <label>Digite sua senha (4 dígitos)</label>
+    <label for="pass1">Digite sua senha (4 dígitos)</label>
     <div class="password-box">
-      <input id="pass1" type="password" maxlength="4" class="input" inputmode="numeric">
-      <img id="eye1" class="eye" src="assets/img/icon-eye.svg">
+      <input id="pass1" type="password" maxlength="4" inputmode="numeric" class="input">
+      <img id="eye1" class="eye" src="assets/img/icon-eye.svg" alt="Mostrar/ocultar">
     </div>
 
-    <label>Confirme sua senha</label>
+    <label for="pass2">Confirme sua senha</label>
     <div class="password-box">
-      <input id="pass2" type="password" maxlength="4" class="input" inputmode="numeric">
-      <img id="eye2" class="eye" src="assets/img/icon-eye.svg">
+      <input id="pass2" type="password" maxlength="4" inputmode="numeric" class="input">
+      <img id="eye2" class="eye" src="assets/img/icon-eye.svg" alt="Mostrar/ocultar">
     </div>
 
     <div id="err" class="error"></div>
 
     <button id="btn-final" class="btn btn-primary" disabled>Finalizar cadastro</button>
+
   </div>
 </div>
 
 <script>
   const p1 = document.getElementById("pass1");
   const p2 = document.getElementById("pass2");
-  const btn = document.getElementById("btn-final");
-  const err = document.getElementById("err");
   const eye1 = document.getElementById("eye1");
   const eye2 = document.getElementById("eye2");
+  const err = document.getElementById("err");
+  const btn = document.getElementById("btn-final");
 
   let passHistory = JSON.parse(localStorage.getItem("angel.passwordHistory") || "[]");
 
   function togglePassword(input, icon) {
-    input.type = input.type === "password" ? "text" : "password";
+    if (input.type === "password") {
+      input.type = "text";
+      icon.src = "assets/img/icon-eye-off.svg";
+    } else {
+      input.type = "password";
+      icon.src = "assets/img/icon-eye.svg";
+    }
   }
 
-  eye1.onclick = () => togglePassword(p1);
-  eye2.onclick = () => togglePassword(p2);
+  eye1.addEventListener("click", () => togglePassword(p1, eye1));
+  eye2.addEventListener("click", () => togglePassword(p2, eye2));
 
   function validate() {
-    const v1 = p1.value;
-    const v2 = p2.value;
+    const v1 = p1.value.trim();
+    const v2 = p2.value.trim();
 
-    err.classList.remove("show");
     btn.disabled = true;
+    err.classList.remove("show");
 
     if (!/^\d{4}$/.test(v1)) {
       err.textContent = "A senha deve conter exatamente 4 números.";
@@ -92,13 +114,14 @@
   p2.addEventListener("input", validate);
 
   btn.addEventListener("click", () => {
-    const v1 = p1.value;
+    const novaSenha = p1.value.trim();
 
-    passHistory.unshift(v1);
-    passHistory = passHistory.slice(0,2);
+    passHistory.unshift(novaSenha);
+    passHistory = passHistory.slice(0, 2);
     localStorage.setItem("angel.passwordHistory", JSON.stringify(passHistory));
+    localStorage.setItem("angel.password", novaSenha);
 
-    localStorage.setItem("angel.password", v1);
+    console.log("password_submit", { success: true });
 
     location.href = "conclusao.html";
   });
