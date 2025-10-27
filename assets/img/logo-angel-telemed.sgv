@@ -1,0 +1,6 @@
+<svg width="170" height="40" viewBox="0 0 170 40" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Arial" font-weight="700" font-size="26" fill="#00C173">Angel</text>
+  <text x="82" y="28" font-family="Arial" font-weight="600" font-size="26" fill="#003A63">Telemed</text>
+  <circle cx="150" cy="20" r="8" fill="#00C173"/>
+  <path d="M148 20 L152 24 M148 24 L152 20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+</svg>
