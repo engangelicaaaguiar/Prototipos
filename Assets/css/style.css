@@ -1,0 +1,69 @@
+/* ---------- Angel Telemed • Design System (starter) ---------- */
+:root{
+  --brand-green:#00C173;
+  --brand-green-dark:#008E57;
+  --brand-blue:#003A63;
+  --bg:#F6F6F6;
+  --white:#FFFFFF;
+  --text:#343434;
+  --border:#CFCFCF;
+  --error:#D92D20;
+  --radius:10px;
+  --maxw:420px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+.app{max-width:var(--maxw);height:100vh;margin:auto;background:var(--white);display:flex;flex-direction:column}
+
+/* Topbar */
+.topbar{background:var(--brand-blue);color:#fff;display:flex;align-items:center;gap:12px;padding:16px 18px;font-weight:700}
+.topbar .title{font-size:18px}
+.topbar .back{width:26px;height:26px;cursor:pointer}
+
+/* Conteúdo */
+.main{padding:26px;flex:1;overflow:auto}
+h1{font-size:22px;margin:0 0 8px 0;color:#005C40}
+p.lead{margin:0 0 24px 0;font-size:14px}
+
+/* Form controls */
+label{font-size:14px;font-weight:600}
+.input{width:100%;padding:14px;border:1px solid var(--border);border-radius:var(--radius);font-size:18px;margin-top:8px}
+.input.error{border-color:var(--error)}
+.helper{font-size:12px;color:var(--error);margin-top:6px;display:none}
+.helper.show{display:block}
+
+/* Botões */
+.btn{width:100%;border:none;border-radius:var(--radius);padding:14px;font-size:18px;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--brand-green);color:#fff}
+.btn-primary:disabled{background:#A9A9A9;cursor:not-allowed}
+.btn-secondary{background:#E7F9F1;color:#055C40}
+
+/* Linhas e microcopy */
+.row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.muted{font-size:12px;color:#666}
+
+/* Welcome chip */
+.welcome{display:flex;align-items:center;gap:10px;font-weight:700;color:#005C40;margin-bottom:10px}
+
+/* OTP */
+.otp{display:flex;gap:10px;margin:10px 0 6px}
+.otp input{width:56px;height:56px;text-align:center;font-size:24px;border:1px solid var(--border);border-radius:12px}
+.timer{font-size:13px;color:#666;margin:6px 0}
+
+/* Password meter */
+.requirements{margin-top:10px;font-size:13px}
+.requirements li{margin-bottom:6px}
+.ok{color:#00A34D}
+.no{color:#D92D20}
+.meter{height:8px;border-radius:6px;background:#eee;margin-top:8px;overflow:hidden}
+.meter > div{height:100%;width:0;background:var(--brand-green);transition:width .2s}
+
+/* Modal LGPD */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;justify-content:center;align-items:flex-end}
+.modal{background:#fff;max-width:var(--maxw);width:100%;border-top-left-radius:16px;border-top-right-radius:16px;padding:18px}
+.modal h3{margin:0 0 8px 0}
+.modal .close{float:right;cursor:pointer;font-size:22px}
+.modal.show{display:flex}
+
+/* Acessibilidade foco */
+:focus{outline:2px solid var(--brand-green-dark);outline-offset:2px}

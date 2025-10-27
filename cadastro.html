@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Complete seu cadastro</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 420px; margin: auto; background: #F8F8F8; }
-    label { margin-top: 12px; display: block; font-weight: bold; }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 18px;
-      border-radius: 8px;
-    }
-    button {
-      background: #00A34D;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:disabled {
-      background: #CCC;
-      cursor: not-allowed;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angel Telemed — Seus dados de cadastro</title>
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+<div class="app">
+  <div class="topbar">
+    <img src="assets/img/icon-back.svg" class="back" alt="Voltar" onclick="history.back()">
+    <div class="title">Seus dados de cadastro</div>
+  </div>
+  <div class="main">
+    <p class="lead">Confirme e atualize seus dados para ativar sua conta.</p>
 
-  <h2>Seus dados de cadastro</h2>
-  <p>Confirme e atualize seus dados para ativar sua conta.</p>
+    <label>Nome completo</label>
+    <input id="nome" class="input" placeholder="Seu nome completo">
 
-  <label>Nome completo</label>
-  <input type="text" id="nome" placeholder="Seu nome" required>
+    <label style="margin-top:14px">CPF</label>
+    <input id="cpf" class="input" readonly>
 
-  <label>Data de nascimento</label>
-  <input type="text" id="data" placeholder="DD/MM/AAAA" required>
+    <label style="margin-top:14px">Data de nascimento</label>
+    <input id="nasc" class="input" placeholder="DD/MM/AAAA">
 
-  <label>Telefone</label>
-  <input type="text" id="tel" placeholder="(99) 99999-9999" required>
+    <label style="margin-top:14px">Telefone</label>
+    <input id="tel" class="input" placeholder="(99) 99999-9999">
+    <div id="tel-err" class="helper">Não conseguimos validar este número. Confira o DDD e se é celular.</div>
 
-  <button id="continuar" disabled>Continuar</button>
+    <div class="muted" style="margin-top:10px">Usaremos seu telefone apenas para validar o acesso.</div>
 
-<script>
-const inputs = document.querySelectorAll("input");
-const btn = document.getElementById("continuar");
+    <button id="go" class="btn btn-primary" disabled>Continuar</button>
+  </div>
+</div>
 
-inputs.forEach(input => {
-  input.addEventListener("input", () => {
-    btn.disabled = ![...inputs].every(i => i.value.trim().length > 3);
+<script type="module">
+  import {maskCPF,maskDate,maskPhone} from './assets/js/app.js';
+
+  const nome=$('#nome'), cpf=$('#cpf'), nasc=$('#nasc'), tel=$('#tel'), go=$('#go'), err=$('#tel-err');
+
+  // Prefill (mock)
+  cpf.value = (localStorage.getItem('angel.cpf')||'').toString();
+  nome.value = 'Ana Maria da Silva';
+  nasc.value = '05/11/1970';
+  tel.value  = '(48) 99999-9999';
+
+  function validate(){
+    tel.value = maskPhone(tel.value);
+    nasc.value = maskDate(nasc.value);
+    const ok = nome.value.trim().length>=3 && nasc.value.length===10 && /\(\d{2}\)\s\d{5}-\d{4}/.test(tel.value);
+    err.classList.toggle('show', !/\(\d{2}\)\s\d{5}-\d{4}/.test(tel.value) && tel.value.length>0);
+    go.disabled = !ok;
+  }
+  [nome,nasc,tel].forEach(i=>i.addEventListener('input', validate));
+  validate();
+
+  go.addEventListener('click', ()=>{
+    console.log('onboarding_profile_submit',{valid: !go.disabled});
+    if(go.disabled) return;
+    localStorage.setItem('angel.phone', tel.value);
+    location.href='otp.html';
   });
-});
 
-btn.addEventListener("click", () => {
-  window.location.href = "otp.html";
-});
+  console.log('onboarding_profile_view');
+  console.log('onboarding_profile_prefill',{fields_prefilled:['nome','data','telefone']});
 </script>
-
 </body>
 </html>
+

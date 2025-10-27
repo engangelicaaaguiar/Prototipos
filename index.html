@@ -1,152 +1,85 @@
- Prototipos 1
-prototipo html para visualização
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angel Telemed - Primeiro Acesso</title>
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #F6F6F6;
-  }
-  
-  .app-container {
-    max-width: 420px;
-    margin: auto;
-    background: #FFFFFF;
-    height: 100vh;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Top Bar */
-  .topbar {
-    background: #003A63; /* Azul do protótipo */
-    color: #fff;
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  .back {
-    font-size: 22px;
-    margin-right: 12px;
-    cursor: pointer;
-  }
-
-  .content {
-    padding: 26px;
-    flex: 1;
-  }
-
-  /* Boas vindas */
-  .welcome {
-    display: flex;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: #005C40;
-    margin-bottom: 10px;
-  }
-  .welcome span {
-    margin-left: 10px;
-  }
-
-  .desc {
-    font-size: 14px;
-    color: #343434;
-    margin-bottom: 26px;
-  }
-
-  label {
-    font-weight: 600;
-    color: #343434;
-    font-size: 14px;
-  }
-
-  input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    border: 1px solid #CFCFCF;
-    margin-top: 8px;
-    font-size: 18px;
-  }
-
-  button {
-    width: 100%;
-    padding: 14px;
-    background: #00C173;
-    color: #FFFFFF;
-    font-size: 18px;
-    border-radius: 10px;
-    border: none;
-    margin-top: 30px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  button:disabled {
-    background: #A9A9A9;
-  }
-
-</style>
+<title>Angel Telemed — Primeiro acesso</title>
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
-
 <body>
-
-<div class="app-container">
-  
+<div class="app">
   <div class="topbar">
-    <div class="back" onclick="window.history.back()">←</div>
-    Primeiro acesso
+    <img src="assets/img/icon-back.svg" alt="Voltar" class="back" onclick="history.back()">
+    <div class="title">Primeiro acesso</div>
   </div>
-  
-  <div class="content">
-    
-    <div class="welcome">
-      ✅ <span>Boas-vindas!</span>
-    </div>
 
-    <p class="desc">
-      Para começar a utilizar o app, precisamos confirmar o cadastro do seu CPF.
-    </p>
+  <div class="main">
+    <div class="welcome">
+      <img src="assets/img/icon-welcome.svg" alt="" width="28" height="28">
+      <h1>Boas-vindas!</h1>
+    </div>
+    <p class="lead">Para sua segurança e acesso ao seu prontuário, confirme o CPF cadastrado.</p>
 
     <label for="cpf">CPF</label>
-    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
+    <input id="cpf" class="input" type="text" placeholder="000.000.000-00" aria-label="Digite seu CPF">
+    <div id="cpf-err" class="helper">CPF inválido. Confira os números.</div>
 
-    <button id="continuar" disabled>Continuar</button>
+    <div class="row" style="margin-top:14px">
+      <input id="optin" type="checkbox" aria-label="Opt-in de comunicados">
+      <div class="muted">Quero receber avisos e novidades por WhatsApp/E-mail.</div>
+    </div>
 
+    <div class="row" style="margin:10px 0 0">
+      <a id="open-lgpd" href="#" class="muted">Seus dados são protegidos pela LGPD</a>
+      <div style="flex:1"></div>
+      <a href="https://wa.me/5500000000000" class="muted">Precisa de ajuda?</a>
+    </div>
+
+    <button id="btn-next" class="btn btn-primary" disabled>Continuar</button>
   </div>
-
 </div>
 
-<script>
-  const cpfInput = document.getElementById('cpf');
-  const btn = document.getElementById('continuar');
+<!-- Modal LGPD -->
+<div id="lgpd-bg" class="modal-bg">
+  <div class="modal">
+    <span id="lgpd-close" class="close">×</span>
+    <h3>Como usamos seus dados (LGPD)</h3>
+    <p>Coletamos CPF para validar elegibilidade e proteger seu acesso. Base legal: execução de contrato e legítimo interesse (Art. 7º). Você pode revogar consentimentos de marketing a qualquer momento.</p>
+    <p><a href="#" target="_blank">Ler política completa</a></p>
+  </div>
+</div>
 
-  function mascaraCPF(valor) {
-    return valor
-      .replace(/\D/g, '')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-  }
+<script type="module">
+  import {maskCPF, cpfIsValid, bindLgpdModal} from './assets/js/app.js';
 
-  cpfInput.addEventListener('input', () => {
-    cpfInput.value = mascaraCPF(cpfInput.value);
-    btn.disabled = cpfInput.value.length < 14;
+  const cpf = document.getElementById('cpf');
+  const err = document.getElementById('cpf-err');
+  const next = document.getElementById('btn-next');
+  const optin = document.getElementById('optin');
+
+  cpf.addEventListener('input', ()=>{
+    cpf.value = maskCPF(cpf.value);
+    const ok = cpf.value.replace(/\D/g,'').length===11 && cpfIsValid(cpf.value);
+    next.disabled = !ok;
+    err.classList.toggle('show', !ok && cpf.value.length>=14);
+    window.localStorage.setItem('angel.cpf', cpf.value);
+    console.log('onboarding_cpf_input', {chars_count: cpf.value.length, mask_ok: ok});
   });
 
-  btn.addEventListener('click', () => {
-    window.location.href = "cadastro.html";
+  optin.addEventListener('change', ()=> console.log('marketing_optin_toggle',{on: optin.checked}));
+
+  next.addEventListener('click', ()=>{
+    const ok = cpfIsValid(cpf.value);
+    console.log('onboarding_cpf_submit',{valid: ok});
+    if(!ok){ err.classList.add('show'); return; }
+    // simulação de elegibilidade: se começar com 999 → não encontrado
+    if(cpf.value.startsWith('999')) location.href='cpf-nao.html';
+    else location.href='cadastro.html';
   });
+
+  bindLgpdModal();
+  console.log('onboarding_cpf_view');
 </script>
-
 </body>
 </html>
+

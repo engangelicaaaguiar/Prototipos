@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angel Telemed — Não encontramos seu CPF</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <img src="assets/img/icon-back.svg" class="back" alt="Voltar" onclick="location.href='index.html'">
+    <div class="title">Primeiro acesso</div>
+  </div>
+  <div class="main">
+    <h1 style="color:#003A63;margin-bottom:6px">Não encontramos seu CPF</h1>
+    <p class="lead">Seu CPF não está ativo ou não foi encontrado em nossa base de parceiros. Para prosseguir, fale com sua operadora.</p>
+
+    <button class="btn btn-primary" onclick="alert('Telefone: 0800 000 000 • Atendimento 08h–18h\nProtocolo gerado: AT-'+Date.now())">Falar com minha operadora</button>
+    <button class="btn btn-secondary" style="margin-top:10px" onclick="window.open('https://wa.me/5500000000000?text=Ol%C3%A1%2C%20meu%20CPF%20%C3%A9%20***.***.***-**%20e%20n%C3%A3o%20consigo%20ativar%20o%20app.%20Podem%20me%20ajudar%3F','_blank')">Chamar pelo WhatsApp</button>
+
+    <div class="row" style="margin-top:14px">
+      <a href="index.html">Tentar novamente</a>
+      <div class="muted" style="margin-left:12px">Dica: confirme se digitou o CPF corretamente.</div>
+    </div>
+  </div>
+</div>
+<script>console.log('onboarding_cpf_not_found_view');</script>
+</body>
+</html>

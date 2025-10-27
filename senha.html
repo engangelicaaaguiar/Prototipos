@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angel Telemed — Crie sua senha</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <img src="assets/img/icon-back.svg" class="back" alt="Voltar" onclick="history.back()">
+    <div class="title">Crie sua senha</div>
+  </div>
+  <div class="main">
+    <p class="lead">Uma senha forte protege seus dados.</p>
+
+    <label>Digite sua senha</label>
+    <div class="row">
+      <input id="pwd" class="input" type="password" placeholder="Digite sua senha" style="flex:1">
+      <button id="toggle-eye" class="btn btn-secondary" style="width:auto;padding:10px 12px">👁</button>
+    </div>
+
+    <label style="margin-top:10px">Confirme sua senha</label>
+    <input id="pwd2" class="input" type="password" placeholder="Confirme sua senha">
+    <div id="pwd-mismatch" class="helper">As senhas não coincidem.</div>
+
+    <ul class="requirements">
+      <li id="req-8"   class="no">Mínimo 8 caracteres</li>
+      <li id="req-case" class="no">Letras maiúsculas e minúsculas</li>
+      <li id="req-num"  class="no">Pelo menos 1 número</li>
+      <li id="req-spec" class="no">(Opcional) 1 caractere especial</li>
+    </ul>
+    <div class="meter"><div id="meter-fill"></div></div>
+
+    <div class="row" style="margin-top:12px">
+      <input id="bio" type="checkbox"> <div>Ativar acesso por biometria (Face ID/Impressão)</div>
+    </div>
+
+    <button id="btn-finish" class="btn btn-primary" disabled>Finalizar cadastro</button>
+  </div>
+</div>
+
+<script type="module">
+  import {bindPassword} from './assets/js/app.js';
+  bindPassword();
+
+  document.getElementById('bio').addEventListener('change', e=>{
+    console.log('biometrics_toggle',{on:e.target.checked});
+    if(e.target.checked) alert('Simulação: diálogo nativo de biometria autorizado.');
+  });
+
+  document.getElementById('btn-finish').addEventListener('click', ()=>{
+    console.log('password_submit',{success:true});
+    location.href='conclusao.html';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angel Telemed — Verificação</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <img src="assets/img/icon-back.svg" class="back" alt="Voltar" onclick="history.back()">
+    <div class="title">Segurança em primeiro lugar!</div>
+  </div>
+  <div class="main">
+    <p class="lead">Enviamos um código de 4 dígitos para <span id="mask"></span></p>
+
+    <div class="otp">
+      <input inputmode="numeric" maxlength="1">
+      <input inputmode="numeric" maxlength="1">
+      <input inputmode="numeric" maxlength="1">
+      <input inputmode="numeric" maxlength="1">
+    </div>
+
+    <div class="timer" id="resend">Reenviar código em 0:59</div>
+
+    <div class="row">
+      <a href="#" id="change">Alterar número</a>
+      <div style="flex:1"></div>
+      <a href="#" id="fallback">Receber por WhatsApp</a>
+    </div>
+
+    <button id="btn-otp" class="btn btn-primary" disabled>Confirmar</button>
+  </div>
+</div>
+
+<script type="module">
+  import {bindOTP} from './assets/js/app.js';
+  const phone = (localStorage.getItem('angel.phone')||'(00) 00000-0000').replace(/\d(?=\d{4})/g,'*');
+  document.getElementById('mask').textContent = phone;
+  bindOTP();
+
+  document.getElementById('change').addEventListener('click', e=>{
+    e.preventDefault(); const novo = prompt('Atualize o número com DDD:','(48) 99999-9999');
+    if(novo){ localStorage.setItem('angel.phone', novo); alert('Número atualizado! Reenviamos o código.'); location.reload(); }
+  });
+  document.getElementById('fallback').addEventListener('click', e=>{
+    e.preventDefault(); window.open('https://wa.me/5500000000000?text=Quero%20receber%20o%20c%C3%B3digo%20por%20WhatsApp','_blank');
+  });
+
+  document.getElementById('btn-otp').addEventListener('click', ()=> location.href='senha.html');
+  console.log('otp_view',{masked_phone:phone});
+</script>
+</body>
+</html>
