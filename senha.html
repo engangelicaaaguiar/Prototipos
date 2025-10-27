@@ -1,59 +1,108 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angel Telemed — Crie sua senha</title>
+<title>Angel Telemed — Criar senha</title>
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .error { color:#c0392b; font-size:14px; margin-top:8px; display:none; }
+  .show { display:block; }
+  .eye { cursor:pointer; width:26px; height:26px; }
+  .password-box { position:relative; }
+  .password-box img { position:absolute; right:12px; top:12px; }
+</style>
 </head>
 <body>
+
 <div class="app">
   <div class="topbar">
-    <img src="assets/img/icon-back.svg" class="back" alt="Voltar" onclick="history.back()">
+    <img src="assets/img/icon-back.svg" class="back" onclick="history.back()">
     <div class="title">Crie sua senha</div>
   </div>
+
   <div class="main">
-    <p class="lead">Uma senha forte protege seus dados.</p>
+    <p>Uma senha protege seus dados de acesso.</p>
 
-    <label>Digite sua senha</label>
-    <div class="row">
-      <input id="pwd" class="input" type="password" placeholder="Digite sua senha" style="flex:1">
-      <button id="toggle-eye" class="btn btn-secondary" style="width:auto;padding:10px 12px">👁</button>
+    <label>Digite sua senha (4 dígitos)</label>
+    <div class="password-box">
+      <input id="pass1" type="password" maxlength="4" class="input" inputmode="numeric">
+      <img id="eye1" class="eye" src="assets/img/icon-eye.svg">
     </div>
 
-    <label style="margin-top:10px">Confirme sua senha</label>
-    <input id="pwd2" class="input" type="password" placeholder="Confirme sua senha">
-    <div id="pwd-mismatch" class="helper">As senhas não coincidem.</div>
-
-    <ul class="requirements">
-      <li id="req-8"   class="no">Mínimo 8 caracteres</li>
-      <li id="req-case" class="no">Letras maiúsculas e minúsculas</li>
-      <li id="req-num"  class="no">Pelo menos 1 número</li>
-      <li id="req-spec" class="no">(Opcional) 1 caractere especial</li>
-    </ul>
-    <div class="meter"><div id="meter-fill"></div></div>
-
-    <div class="row" style="margin-top:12px">
-      <input id="bio" type="checkbox"> <div>Ativar acesso por biometria (Face ID/Impressão)</div>
+    <label>Confirme sua senha</label>
+    <div class="password-box">
+      <input id="pass2" type="password" maxlength="4" class="input" inputmode="numeric">
+      <img id="eye2" class="eye" src="assets/img/icon-eye.svg">
     </div>
 
-    <button id="btn-finish" class="btn btn-primary" disabled>Finalizar cadastro</button>
+    <div id="err" class="error"></div>
+
+    <button id="btn-final" class="btn btn-primary" disabled>Finalizar cadastro</button>
   </div>
 </div>
 
-<script type="module">
-  import {bindPassword} from './assets/js/app.js';
-  bindPassword();
+<script>
+  const p1 = document.getElementById("pass1");
+  const p2 = document.getElementById("pass2");
+  const btn = document.getElementById("btn-final");
+  const err = document.getElementById("err");
+  const eye1 = document.getElementById("eye1");
+  const eye2 = document.getElementById("eye2");
 
-  document.getElementById('bio').addEventListener('change', e=>{
-    console.log('biometrics_toggle',{on:e.target.checked});
-    if(e.target.checked) alert('Simulação: diálogo nativo de biometria autorizado.');
-  });
+  let passHistory = JSON.parse(localStorage.getItem("angel.passwordHistory") || "[]");
 
-  document.getElementById('btn-finish').addEventListener('click', ()=>{
-    console.log('password_submit',{success:true});
-    location.href='conclusao.html';
+  function togglePassword(input, icon) {
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  eye1.onclick = () => togglePassword(p1);
+  eye2.onclick = () => togglePassword(p2);
+
+  function validate() {
+    const v1 = p1.value;
+    const v2 = p2.value;
+
+    err.classList.remove("show");
+    btn.disabled = true;
+
+    if (!/^\d{4}$/.test(v1)) {
+      err.textContent = "A senha deve conter exatamente 4 números.";
+      err.classList.add("show");
+      return;
+    }
+
+    if (v1 !== v2) {
+      err.textContent = "As senhas não coincidem.";
+      err.classList.add("show");
+      return;
+    }
+
+    if (passHistory.includes(v1)) {
+      err.textContent = "Você já usou esta senha recentemente. Escolha outra.";
+      err.classList.add("show");
+      return;
+    }
+
+    err.classList.remove("show");
+    btn.disabled = false;
+  }
+
+  p1.addEventListener("input", validate);
+  p2.addEventListener("input", validate);
+
+  btn.addEventListener("click", () => {
+    const v1 = p1.value;
+
+    passHistory.unshift(v1);
+    passHistory = passHistory.slice(0,2);
+    localStorage.setItem("angel.passwordHistory", JSON.stringify(passHistory));
+
+    localStorage.setItem("angel.password", v1);
+
+    location.href = "conclusao.html";
   });
 </script>
+
 </body>
 </html>
