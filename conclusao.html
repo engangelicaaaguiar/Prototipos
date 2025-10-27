@@ -1,55 +1,40 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tudo pronto!</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+<!-- ⭐⭐⭐ GRID PRINCIPAL COM FOTOS ATUALIZADAS ⭐⭐⭐ -->
+<div class="grid">
 
-<!-- HEADER -->
-<header class="header">
-    <div class="header-content">
-        <a href="index.html" class="back-btn">←</a>
-        <h1>Tudo pronto!</h1>
-    </div>
-</header>
+  <!-- Agendar consulta -->
+  <div class="card-hero" data-modal="m-agendar">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1606813902914-5f8f9f0f4aa0?auto=format&fit=crop&w=1200&q=80');"></div>
+    <div class="label"><span class="badge">🩺 Agendar consulta</span></div>
+  </div>
 
-<!-- CONTEÚDO -->
-<div class="container">
-    <h2 id="welcome-name"></h2>
+  <!-- Atendimento 24h -->
+  <div class="card-hero" data-modal="m-24h">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1580281658625-78e8c976f9d8?auto=format&fit=crop&w=1200&q=80');"></div>
+    <div class="label"><span class="badge">🚑 Atendimento 24h</span></div>
+  </div>
 
-    <p class="subtitle">
-        Seu prontuário e agendamentos estão na palma da sua mão.
-    </p>
+  <!-- Trilha do cuidado -->
+  <div class="card-hero" data-modal="m-trilha">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554284126-aa88f22d8b72?auto=format&fit=crop&w=1200&q=80');"></div>
+    <div class="label"><span class="badge">❤️ Trilha do cuidado</span></div>
+  </div>
 
-    <button class="btn btn-primary" onclick="goToSchedule()">Agendar minha 1ª consulta</button>
+  <!-- WhatsApp -->
+  <div class="card-hero" data-modal="m-whats">
+    <div class="bg" style="background-image:url('https://i.imgur.com/lXtvojV.jpg');"></div>
+    <div class="label"><span class="badge">💬 WhatsApp</span></div>
+  </div>
 
-    <button class="btn btn-secondary" onclick="alert('Benefícios em breve!')">
-        Ver meus benefícios
-    </button>
-
-    <p class="note">
-        Você pode ativar biometria nas configurações a qualquer momento.
-    </p>
 </div>
 
-<script>
-    // ✅ Recupera o nome salvo no localStorage
-    const fullName = localStorage.getItem("fullName") || "Usuário";
-    const firstName = fullName.split(" ")[0]; // pega somente o primeiro nome
+<!-- ⭐⭐⭐ CARTÃO DA CONSULTA COM IMAGEM FEMININA ⭐⭐⭐ -->
 
-    document.getElementById("welcome-name").innerText = `Tudo pronto, ${firstName}!`;
-
-    // ✅ CTA principal
-    function goToSchedule(){
-        alert("Navegar para tela de agendamento");
-        // quando tiver a tela real substituímos por:
-        // window.location.href = "agendar.html";
-    }
-</script>
-
-</body>
-</html>
+<div class="appointment">
+  <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=800&q=80');"></div>
+  <div class="meta">
+    <p class="title">Dra. Marina Sousa • Clínica Geral</p>
+    <p class="sub">Hoje, 19:30 • Teleconsulta</p>
+  </div>
+  <button class="btn btn-outline" onclick="openModal('m-consulta')">Detalhes</button>
+</div>
 
