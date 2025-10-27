@@ -18,20 +18,36 @@
       <img src="assets/img/icon-welcome.svg" alt="" width="28" height="28">
       <h1>Boas-vindas!</h1>
     </div>
-    <p class="lead">Para sua segurança e acesso ao seu prontuário, confirme o CPF cadastrado.</p>
+    <p class="lead">
+      Para sua segurança e acesso ao seu prontuário, confirme o CPF cadastrado.
+    </p>
 
     <label for="cpf">CPF</label>
     <input id="cpf" class="input" type="text" placeholder="000.000.000-00" aria-label="Digite seu CPF">
     <div id="cpf-err" class="helper">CPF inválido. Confira os números.</div>
 
-    <div class="row" style="margin-top:14px">
-      <input id="optin" type="checkbox" aria-label="Opt-in de comunicados">
-      <div class="muted">Quero receber avisos e novidades por WhatsApp/E-mail.</div>
+    <!-- Consentimento obrigatório -->
+    <div class="row" style="margin-top:18px;">
+      <input id="lgpd" type="checkbox">
+      <label for="lgpd" style="font-size:13px;">
+        Declaro que li e aceito os
+        <a href="#" id="open-lgpd">Termos de Uso</a> e a
+        <a href="#" id="open-lgpd2">Política de Privacidade</a>.
+      </label>
+    </div>
+    <div id="lgpd-err" class="helper">É necessário aceitar os Termos e Política para continuar.</div>
+
+    <!-- Consentimento opcional -->
+    <div class="row" style="margin-top:10px;">
+      <input id="optin" type="checkbox">
+      <label for="optin" class="muted" style="font-size:13px;">
+        Quero receber avisos e novidades por WhatsApp/E-mail.
+      </label>
     </div>
 
-    <div class="row" style="margin:10px 0 0">
-      <a id="open-lgpd" href="#" class="muted">Seus dados são protegidos pela LGPD</a>
-      <div style="flex:1"></div>
+    <div class="row" style="margin:14px 0 0;">
+      <a href="#" id="lgpd-modal-link" class="muted">Política de privacidade</a>
+      <div style="flex:1;"></div>
       <a href="https://wa.me/5500000000000" class="muted">Precisa de ajuda?</a>
     </div>
 
@@ -39,13 +55,13 @@
   </div>
 </div>
 
-<!-- Modal LGPD -->
+<!-- Modal simples LGPD -->
 <div id="lgpd-bg" class="modal-bg">
   <div class="modal">
     <span id="lgpd-close" class="close">×</span>
     <h3>Como usamos seus dados (LGPD)</h3>
-    <p>Coletamos CPF para validar elegibilidade e proteger seu acesso. Base legal: execução de contrato e legítimo interesse (Art. 7º). Você pode revogar consentimentos de marketing a qualquer momento.</p>
-    <p><a href="#" target="_blank">Ler política completa</a></p>
+    <p>Coletamos CPF para validar elegibilidade e proteger seu acesso clínico. Você pode revogar consentimentos de marketing a qualquer momento.</p>
+    <a href="#" target="_blank">Ler política completa</a>
   </div>
 </div>
 
@@ -53,28 +69,45 @@
   import {maskCPF, cpfIsValid, bindLgpdModal} from './assets/js/app.js';
 
   const cpf = document.getElementById('cpf');
-  const err = document.getElementById('cpf-err');
-  const next = document.getElementById('btn-next');
+  const errCpf = document.getElementById('cpf-err');
+  const btn = document.getElementById('btn-next');
+  const lgpd = document.getElementById('lgpd');
   const optin = document.getElementById('optin');
+  const errLgpd = document.getElementById('lgpd-err');
 
-  cpf.addEventListener('input', ()=>{
+  function validate() {
     cpf.value = maskCPF(cpf.value);
-    const ok = cpf.value.replace(/\D/g,'').length===11 && cpfIsValid(cpf.value);
-    next.disabled = !ok;
-    err.classList.toggle('show', !ok && cpf.value.length>=14);
-    window.localStorage.setItem('angel.cpf', cpf.value);
-    console.log('onboarding_cpf_input', {chars_count: cpf.value.length, mask_ok: ok});
+    const cpfOk = cpf.value.replace(/\D/g, '').length === 11 && cpfIsValid(cpf.value);
+    const lgpdOk = lgpd.checked;
+
+    btn.disabled = !(cpfOk && lgpdOk);
+
+    errCpf.classList.toggle('show', !cpfOk && cpf.value.length >= 14);
+    errLgpd.classList.toggle('show', !lgpdOk && cpfOk);
+
+    return cpfOk && lgpdOk;
+  }
+
+  cpf.addEventListener('input', validate);
+  lgpd.addEventListener('change', validate);
+  optin.addEventListener('change', () => {
+    console.log('marketing_optin_toggle', { on: optin.checked });
   });
 
-  optin.addEventListener('change', ()=> console.log('marketing_optin_toggle',{on: optin.checked}));
+  btn.addEventListener('click', () => {
+    if (!validate()) return;
+    
+    console.log('consent_privacy_accept', { timestamp: Date.now() });
+    console.log('onboarding_cpf_submit', { valid: true });
 
-  next.addEventListener('click', ()=>{
-    const ok = cpfIsValid(cpf.value);
-    console.log('onboarding_cpf_submit',{valid: ok});
-    if(!ok){ err.classList.add('show'); return; }
-    // simulação de elegibilidade: se começar com 999 → não encontrado
-    if(cpf.value.startsWith('999')) location.href='cpf-nao.html';
-    else location.href='cadastro.html';
+    localStorage.setItem('angel.cpf', cpf.value);
+    localStorage.setItem('angel.optin', optin.checked);
+
+    if (cpf.value.startsWith('999')) {
+      location.href = 'cpf-nao.html';
+    } else {
+      location.href = 'cadastro.html';
+    }
   });
 
   bindLgpdModal();
