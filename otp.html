@@ -1,55 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angel Telemed — Verificação</title>
+<title>Angel Telemed — Confirmar código</title>
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .otp-box { width: 50px; height: 50px; font-size: 26px; text-align: center; margin: 0 6px; }
+  .disabled-link { pointer-events:none; opacity:0.3; }
+  .error { color:#c0392b; font-size:14px; margin-top:6px; display:none; }
+  .show { display:block; }
+</style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
-    <img src="assets/img/icon-back.svg" class="back" alt="Voltar" onclick="history.back()">
+    <img src="assets/img/icon-back.svg" class="back" onclick="history.back()">
     <div class="title">Segurança em primeiro lugar!</div>
   </div>
-  <div class="main">
-    <p class="lead">Enviamos um código de 4 dígitos para <span id="mask"></span></p>
 
-    <div class="otp">
-      <input inputmode="numeric" maxlength="1">
-      <input inputmode="numeric" maxlength="1">
-      <input inputmode="numeric" maxlength="1">
-      <input inputmode="numeric" maxlength="1">
+  <div class="main" style="text-align:center;">
+    <p>Enviamos um código de 4 dígitos para<br><strong id="phone-mask"></strong></p>
+
+    <div style="display:flex; justify-content:center; margin:18px 0;">
+      <input type="text" maxlength="1" class="otp-box" id="d1">
+      <input type="text" maxlength="1" class="otp-box" id="d2">
+      <input type="text" maxlength="1" class="otp-box" id="d3">
+      <input type="text" maxlength="1" class="otp-box" id="d4">
     </div>
 
-    <div class="timer" id="resend">Reenviar código em 0:59</div>
+    <div id="error" class="error">Código incorreto. Tente novamente.</div>
 
-    <div class="row">
-      <a href="#" id="change">Alterar número</a>
-      <div style="flex:1"></div>
-      <a href="#" id="fallback">Receber por WhatsApp</a>
-    </div>
+    <p style="font-size:14px;">
+      Reenviar código em <span id="timer">0:59</span><br>
+      <a id="resendSms" class="disabled-link">Enviar por SMS</a> •
+      <a id="resendZap" class="disabled-link">Receber por WhatsApp</a><br>
+      <a href="cadastro.html">Alterar número</a>
+    </p>
 
-    <button id="btn-otp" class="btn btn-primary" disabled>Confirmar</button>
+    <button id="btn-confirm" class="btn btn-primary" disabled>Confirmar</button>
   </div>
 </div>
 
-<script type="module">
-  import {bindOTP} from './assets/js/app.js';
-  const phone = (localStorage.getItem('angel.phone')||'(00) 00000-0000').replace(/\d(?=\d{4})/g,'*');
-  document.getElementById('mask').textContent = phone;
-  bindOTP();
+<script>
+  const phone = localStorage.getItem('angel.phone') || '(00) 00000-0000';
+  const mask = phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) *****-$3');
+  document.getElementById('phone-mask').innerText = mask;
 
-  document.getElementById('change').addEventListener('click', e=>{
-    e.preventDefault(); const novo = prompt('Atualize o número com DDD:','(48) 99999-9999');
-    if(novo){ localStorage.setItem('angel.phone', novo); alert('Número atualizado! Reenviamos o código.'); location.reload(); }
-  });
-  document.getElementById('fallback').addEventListener('click', e=>{
-    e.preventDefault(); window.open('https://wa.me/5500000000000?text=Quero%20receber%20o%20c%C3%B3digo%20por%20WhatsApp','_blank');
+  const inputs = [...document.querySelectorAll('.otp-box')];
+  const btn = document.getElementById('btn-confirm');
+  const error = document.getElementById('error');
+  const timer = document.getElementById('timer');
+  const sms = document.getElementById('resendSms');
+  const zap = document.getElementById('resendZap');
+
+  const correctCode = "1234"; // ✅ código mockado para teste
+
+  inputs.forEach((el, i) => {
+    el.addEventListener('input', () => {
+      el.value = el.value.replace(/\D/g,'');
+      if (el.value && i < 3) inputs[i+1].focus();
+      validate();
+    });
+
+    el.addEventListener('keydown', e => {
+      if (e.key === "Backspace" && i > 0 && !el.value) {
+        inputs[i-1].focus();
+      }
+    });
   });
 
-  document.getElementById('btn-otp').addEventListener('click', ()=> location.href='senha.html');
-  console.log('otp_view',{masked_phone:phone});
+  function validate() {
+    const code = inputs.map(i => i.value).join('');
+    btn.disabled = code.length !== 4;
+    error.classList.remove("show");
+  }
+
+  btn.onclick = () => {
+    const code = inputs.map(i => i.value).join('');
+    if (code === correctCode) {
+      location.href = "senha.html";
+    } else {
+      error.classList.add("show");
+      inputs.forEach(i => i.value = "");
+      inputs[0].focus();
+      validate();
+    }
+  };
+
+  let sec = 59;
+  const interval = setInterval(() => {
+    timer.innerText = `0:${sec.toString().padStart(2,'0')}`;
+    if (sec <= 0) {
+      clearInterval(interval);
+      sms.classList.remove("disabled-link");
+      zap.classList.remove("disabled-link");
+      timer.innerText = "00:00";
+    }
+    sec--;
+  }, 1000);
+
+  zap.addEventListener("click", ()=>{
+    const msg = encodeURIComponent("Olá! Meu código não chegou. Pode reenviar?");
+    window.open(`https://wa.me/55${phone.replace(/\D/g,"")}?text=${msg}`);
+  });
 </script>
+
 </body>
 </html>
