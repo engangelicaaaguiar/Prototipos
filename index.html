@@ -3,71 +3,150 @@ prototipo html para visualização
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Primeiro Acesso - Confirme seu CPF</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angel Telemed - Primeiro Acesso</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 420px;
-      margin: auto;
-      background: #F8F8F8;
-    }
-    h2 {
-      font-size: 22px;
-      color: #004AAD;
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 16px;
-      font-size: 18px;
-      border-radius: 8px;
-    }
-    button {
-      background: #00A34D;
-      color: #fff;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #A9A9A9;
-      cursor: not-allowed;
-    }
-  </style>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #F6F6F6;
+  }
+  
+  .app-container {
+    max-width: 420px;
+    margin: auto;
+    background: #FFFFFF;
+    height: 100vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top Bar */
+  .topbar {
+    background: #003A63; /* Azul do protótipo */
+    color: #fff;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .back {
+    font-size: 22px;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+
+  .content {
+    padding: 26px;
+    flex: 1;
+  }
+
+  /* Boas vindas */
+  .welcome {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #005C40;
+    margin-bottom: 10px;
+  }
+  .welcome span {
+    margin-left: 10px;
+  }
+
+  .desc {
+    font-size: 14px;
+    color: #343434;
+    margin-bottom: 26px;
+  }
+
+  label {
+    font-weight: 600;
+    color: #343434;
+    font-size: 14px;
+  }
+
+  input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #CFCFCF;
+    margin-top: 8px;
+    font-size: 18px;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background: #00C173;
+    color: #FFFFFF;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 30px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  button:disabled {
+    background: #A9A9A9;
+  }
+
+</style>
 </head>
+
 <body>
-  <h2>Confirme seu CPF</h2>
-  <p>Para sua segurança, confirme o CPF cadastrado.</p>
 
-  <label for="cpf">CPF</label>
-  <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
+<div class="app-container">
+  
+  <div class="topbar">
+    <div class="back" onclick="window.history.back()">←</div>
+    Primeiro acesso
+  </div>
+  
+  <div class="content">
+    
+    <div class="welcome">
+      ✅ <span>Boas-vindas!</span>
+    </div>
 
-  <button id="continuar" disabled>Continuar</button>
+    <p class="desc">
+      Para começar a utilizar o app, precisamos confirmar o cadastro do seu CPF.
+    </p>
 
-  <script>
-    const cpfInput = document.getElementById('cpf');
-    const btn = document.getElementById('continuar');
+    <label for="cpf">CPF</label>
+    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
 
-    function mascaraCPF(valor) {
-      return valor
-        .replace(/\D/g, '')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    }
+    <button id="continuar" disabled>Continuar</button>
 
-    cpfInput.addEventListener('input', () => {
-      cpfInput.value = mascaraCPF(cpfInput.value);
-      btn.disabled = cpfInput.value.length < 14;
-    });
+  </div>
 
-    btn.addEventListener('click', () => {
-      window.location.href = "cadastro.html";
-    });
-  </script>
+</div>
+
+<script>
+  const cpfInput = document.getElementById('cpf');
+  const btn = document.getElementById('continuar');
+
+  function mascaraCPF(valor) {
+    return valor
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+
+  cpfInput.addEventListener('input', () => {
+    cpfInput.value = mascaraCPF(cpfInput.value);
+    btn.disabled = cpfInput.value.length < 14;
+  });
+
+  btn.addEventListener('click', () => {
+    window.location.href = "cadastro.html";
+  });
+</script>
+
 </body>
 </html>
