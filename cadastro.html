@@ -1,105 +1,309 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angel Telemed — Seus dados</title>
-<link rel="stylesheet" href="assets/css/style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Angel Telemed — Cadastro Rápido</title>
+<style>
+:root{
+  --brand-blue:#00357A;--brand-green:#00A56F;--muted:#708195;
+  --card:#ffffff;--bg:#F6FAFF;--radius:14px;--shadow:0 10px 24px rgba(13,15,18,.06);
+  --gap:14px;
+}
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--bg);color:#0b1220}
+.container{max-width:420px;margin:0 auto;min-height:100vh;padding-bottom:84px;}
+.topbar{background:var(--brand-blue);color:#fff;padding:18px;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-weight:700}
+.greeting{padding:18px}
+.greeting h2{margin:0 0 6px;font-size:20px;color:var(--brand-blue)}
+.greeting p{margin:0;color:var(--muted);font-size:14px}
+
+/* Card-like form */
+.form-card{background:var(--card);margin:12px;padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.field{margin-bottom:12px}
+.label{display:block;margin-bottom:6px;font-weight:600;color:#213345}
+.input, .readonly{
+  width:100%;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-size:15px;
+}
+.readonly{background:#f4f6f8;color:#5b6c7b;border:1px dashed #e6eef6}
+.row{display:flex;gap:10px}
+.small{flex:1}
+.help{font-size:13px;color:var(--muted);margin-top:6px}
+.error{color:#c62828;font-size:13px;margin-top:6px;display:none}
+.checkbox{display:flex;align-items:center;gap:10px}
+.btn{
+  display:block;width:100%;padding:14px;border-radius:12px;border:0;background:var(--brand-green);
+  color:#fff;font-weight:700;font-size:16px;margin:12px 0;cursor:pointer;opacity:1;
+}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.meta-company{font-size:13px;color:var(--muted);margin-bottom:10px}
+.inline-links{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--brand-blue);margin-top:6px}
+
+/* small responsive */
+@media (max-width:440px){
+  .container{padding:0 10px}
+}
+</style>
 </head>
 <body>
-<div class="app">
-  <div class="topbar">
-    <img src="assets/img/icon-back.svg" class="back" onclick="history.back()">
-    <div class="title">Seus dados de cadastro</div>
+  <div class="container" role="main">
+    <!-- Top -->
+    <div class="topbar">
+      <div class="header-title">Angel Telemed</div>
+      <div id="top-hello" aria-live="polite">Olá!</div>
+    </div>
+
+    <div class="greeting">
+      <h2>Seus dados de cadastro</h2>
+      <p>Confirme e atualize seus dados para ativar sua conta.</p>
+    </div>
+
+    <form id="cadForm" class="form-card" novalidate>
+      <!-- Empresa (não editável) -->
+      <div class="field">
+        <div class="meta-company">Vinculado a <strong id="empresa">—</strong></div>
+      </div>
+
+      <!-- Nome -->
+      <div class="field">
+        <label class="label" for="nome">Nome completo</label>
+        <input id="nome" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" aria-describedby="nomeHelp" />
+        <div id="nomeError" class="error">Informe nome e sobrenome (pelo menos 2 palavras).</div>
+      </div>
+
+      <!-- CPF (block) -->
+      <div class="field">
+        <label class="label" for="cpf">CPF</label>
+        <input id="cpf" class="readonly" type="text" readonly aria-readonly="true" />
+        <div class="help">CPF validado na etapa anterior — não é editável aqui.</div>
+      </div>
+
+      <!-- Data de nascimento -->
+      <div class="field">
+        <label class="label" for="dataNasc">Data de nascimento</label>
+        <input id="dataNasc" class="input" inputmode="numeric" placeholder="DD/MM/AAAA" aria-describedby="dataHelp" />
+        <div id="dataError" class="error">Informe uma data válida (DD/MM/AAAA). Ano mínimo 1900.</div>
+      </div>
+
+      <!-- Telefone (obrigatório) -->
+      <div class="field">
+        <label class="label" for="telefone">Telefone celular (com DDI e DDD)</label>
+        <input id="telefone" class="input" inputmode="tel" placeholder="+55 (99) 9 9999-9999" />
+        <div id="telError" class="error">Telefone inválido. Inclua DDI +55, DDD e 9 dígitos (ex: +55 (48) 99999-9999).</div>
+      </div>
+
+      <!-- E-mail (opcional) -->
+      <div class="field">
+        <label class="label" for="email">E-mail (opcional)</label>
+        <input id="email" class="input" type="email" placeholder="seu.nome@exemplo.com" />
+        <div id="emailError" class="error">E-mail inválido. Ex: nome@dominio.com</div>
+      </div>
+
+      <div class="inline-links">
+        <a href="#" id="lgpdLink">Seus dados são protegidos pela LGPD</a>
+        <a href="#" id="helpLink">Precisa de ajuda?</a>
+      </div>
+
+      <button id="continuar" class="btn" type="submit" disabled>Continuar</button>
+    </form>
+
   </div>
 
-  <div class="main">
-    <h1>Atualize seus dados</h1>
-    <p class="lead">Confirme e atualize seus dados para ativar sua conta.</p>
+<script>
+/* ---------- Util / DOM ---------- */
+const nomeInp = document.getElementById('nome');
+const cpfInp = document.getElementById('cpf');
+const dataInp = document.getElementById('dataNasc');
+const telInp = document.getElementById('telefone');
+const emailInp = document.getElementById('email');
+const btn = document.getElementById('continuar');
+const empresaEl = document.getElementById('empresa');
+const topHello = document.getElementById('top-hello');
 
-    <label for="nome">Nome completo</label>
-    <input id="nome" type="text" placeholder="Seu nome completo" class="input">
-    <div id="err-nome" class="helper">Digite nome e sobrenome.</div>
+const nomeErr = document.getElementById('nomeError');
+const dataErr = document.getElementById('dataError');
+const telErr = document.getElementById('telError');
+const emailErr = document.getElementById('emailError');
 
-    <label for="cpf">CPF</label>
-    <input id="cpf" type="text" class="input" readonly>
-
-    <label for="nasc">Data de nascimento</label>
-    <input id="nasc" type="text" placeholder="DD/MM/AAAA" class="input" maxlength="10">
-    <div id="err-nasc" class="helper">Informe uma data válida (DD/MM/AAAA).</div>
-
-    <label for="phone">Telefone celular</label>
-    <input id="phone" type="text" placeholder="(99) 99999-9999" class="input">
-    <div id="err-phone" class="helper">Telefone inválido. Use: (99) 99999-9999</div>
-
-    <label for="email">E-mail (opcional)</label>
-    <input id="email" type="email" placeholder="voce@email.com" class="input">
-    <div id="err-email" class="helper">E-mail inválido.</div>
-
-    <button id="btn-next" class="btn btn-primary" disabled>Continuar</button>
-  </div>
-</div>
-
-<script type="module">
-  import {
-    maskCPF, cpfIsValid,
-    maskPhone, phoneIsValid,
-    maskDate, dateIsValid
-  } from './assets/js/app.js';
-
-  const nome = document.getElementById('nome');
-  const cpf = document.getElementById('cpf');
-  const nasc = document.getElementById('nasc');
-  const phone = document.getElementById('phone');
-  const email = document.getElementById('email');
-  const btn = document.getElementById('btn-next');
-
-  // Carregar CPF salvo na tela anterior
-  cpf.value = localStorage.getItem('angel.cpf') || '';
-
-  const reNome = /^[A-Za-zÀ-ÿ]{2,}\s+[A-Za-zÀ-ÿ]{2,}(\s+[A-Za-zÀ-ÿ]{2,})*$/;
-
-  function validate() {
-    // Nome completo (mín. 2 palavras)
-    const nomeOK = reNome.test(nome.value.trim());
-    document.getElementById('err-nome').classList.toggle('show', !nomeOK);
-
-    // Data
-    nasc.value = maskDate(nasc.value);
-    const nascOK = dateIsValid(nasc.value);
-    document.getElementById('err-nasc').classList.toggle('show', !nascOK);
-
-    // Telefone
-    phone.value = maskPhone(phone.value);
-    const phoneOK = phoneIsValid(phone.value);
-    document.getElementById('err-phone').classList.toggle('show', !phoneOK);
-
-    // Email opcional
-    const emailOK = email.value === '' || /\S+@\S+\.\S+/.test(email.value);
-    document.getElementById('err-email').classList.toggle('show', !emailOK);
-
-    btn.disabled = !(nomeOK && nascOK && phoneOK && emailOK);
+/* Preenche dados da validação anterior */
+(function prefillFromStorage(){
+  const nome = localStorage.getItem('angel.nome') || '';
+  const empresa = localStorage.getItem('angel.empresa') || 'Angel Corp Saúde Digital';
+  const cpf = localStorage.getItem('angel.cpf') || ''; // se tiver sido salvo antes
+  // prefill UI
+  empresaEl.textContent = empresa;
+  topHello.textContent = nome ? 'Olá, ' + nome.split(' ')[0] : 'Olá!';
+  if(nome) nomeInp.value = nome;
+  if(cpf){
+    cpfInp.value = maskCPF(cpf);
+  } else {
+    // tenta obter cpf do localStorage antigo (exemplo)
+    const cpfLocal = localStorage.getItem('cpf_raw') || '';
+    if(cpfLocal) cpfInp.value = maskCPF(cpfLocal);
   }
+})();
 
-  nome.addEventListener('input', validate);
-  nasc.addEventListener('input', validate);
-  phone.addEventListener('input', validate);
-  email.addEventListener('input', validate);
+/* ---------- Máscaras e Validações ---------- */
+function maskCPF(v){
+  v = (v || '').replace(/\D/g,'').slice(0,11);
+  return v.replace(/(\d{3})(\d)/,'$1.$2')
+          .replace(/(\d{3})(\d)/,'$1.$2')
+          .replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+}
+function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
 
-  btn.addEventListener('click', () => {
-    if (btn.disabled) return;
+function maskDate(v){
+  v = v.replace(/\D/g,'').slice(0,8);
+  v = v.replace(/(\d{2})(\d)/,'$1/$2').replace(/(\d{2})(\d{1,2})$/,'$1/$2');
+  return v;
+}
+function maskTel(v){
+  v = v.replace(/\D/g,'').slice(0,13); // allow +55 + ddd + 9 digits = up to 13
+  // We'll format as +55 (DD) 9XXXX-XXXX or fallback
+  // if it already has country code 55 at start assume that
+  // Try simple formatting:
+  let d = v;
+  if(d.startsWith('55')) d = '+' + d;
+  if(d.startsWith('+55') && d.length>=4){
+    let rest = d.slice(3);
+    rest = rest.replace(/\D/g,'');
+    if(rest.length<=2) return '+55 ('+rest;
+    if(rest.length<=7) return '+55 ('+rest.slice(0,2)+') '+rest.slice(2);
+    return '+55 ('+rest.slice(0,2)+') '+rest.slice(2,7)+'-'+rest.slice(7,11);
+  }
+  // fallback insert +55 if short
+  return '+' + v;
+}
 
-    localStorage.setItem('angel.nome', nome.value.trim());
-    localStorage.setItem('angel.nasc', nasc.value);
-    localStorage.setItem('angel.phone', phone.value);
-    localStorage.setItem('angel.email', email.value);
+/* Validadores */
+function validarNome(val){
+  if(!val) return false;
+  const parts = val.trim().split(/\s+/);
+  return parts.length >= 2 && parts.every(p=>p.length>=2);
+}
+function validarData(val){
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(val)) return false;
+  const [dd,mm,aaaa] = val.split('/').map(Number);
+  if(aaaa < 1900 || mm <1 || mm>12 || dd<1 || dd>31) return false;
+  const date = new Date(aaaa, mm-1, dd);
+  return (date.getFullYear()===aaaa && date.getMonth()===mm-1 && date.getDate()===dd);
+}
+function validarTelefone(val){
+  const d = onlyDigits(val);
+  // Accepts with 55 country: 55 + DDD(2) + 9 digits = 13 digits OR if leading plus removed
+  if(d.startsWith('55')) return d.length === 13;
+  // If user typed without country but with DDD+9digits (11)
+  return d.length === 11;
+}
+function validarEmail(val){
+  if(!val) return true; // optional
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  return re.test(val);
+}
 
-    console.log('onboarding_profile_submit', {valid: true});
+/* ---------- Eventos UI ---------- */
+// masks on typing
+dataInp.addEventListener('input', (e)=> {
+  const v = maskDate(e.target.value);
+  e.target.value = v;
+  validateAll();
+});
+telInp.addEventListener('input', (e)=>{
+  // try to maintain readable if starts with + or digits
+  const v = e.target.value.replace(/\D/g,'');
+  // if user typed starting with 55, keep that; else assume they type DDD + number
+  // We'll display as +55 (DD) 9....
+  let shown = v;
+  if(v.length>0 && v.length<=2) shown = '+' + v;
+  if(v.length>2 && v.slice(0,2)==='55') shown = maskTel(v);
+  else if(v.length>0) shown = '+' + v;
+  e.target.value = shown;
+  validateAll();
+});
+emailInp.addEventListener('input', ()=> validateAll());
+nomeInp.addEventListener('input', ()=> validateAll());
 
-    location.href = 'otp.html';
-  });
+/* If cpf not masked in localstorage, ensure visual mask remains */
+(function ensureCpfMask(){
+  // if cpf input already has digits without mask, mask it
+  const raw = cpfInp.value.replace(/\D/g,'');
+  if(raw) cpfInp.value = maskCPF(raw);
+})();
 
-  console.log('onboarding_profile_view');
+/* ---------- Form validation flow ---------- */
+function validateAll(){
+  let ok = true;
+
+  // Nome
+  if(!validarNome(nomeInp.value)){
+    nomeErr.style.display = 'block';
+    ok = false;
+  } else { nomeErr.style.display = 'none'; }
+
+  // Data
+  if(!validarData(dataInp.value)){
+    dataErr.style.display = 'block';
+    ok = false;
+  } else { dataErr.style.display = 'none'; }
+
+  // Telefone
+  if(!validarTelefone(telInp.value)){
+    telErr.style.display = 'block';
+    ok = false;
+  } else { telErr.style.display = 'none'; }
+
+  // Email (optional)
+  if(!validarEmail(emailInp.value)){
+    emailErr.style.display = 'block';
+    ok = false;
+  } else { emailErr.style.display = 'none'; }
+
+  btn.disabled = !ok;
+  return ok;
+}
+
+/* on submit */
+document.getElementById('cadForm').addEventListener('submit', function(ev){
+  ev.preventDefault();
+  if(!validateAll()){
+    // focus first invalid
+    if(nomeErr.style.display==='block') nomeInp.focus();
+    else if(dataErr.style.display==='block') dataInp.focus();
+    else if(telErr.style.display==='block') telInp.focus();
+    else if(emailErr.style.display==='block') emailInp.focus();
+    return;
+  }
+  // Save to localStorage for next steps
+  localStorage.setItem('angel.nome', nomeInp.value.trim());
+  // store raw cpf digits too (without punctuation)
+  const cpfRaw = onlyDigits(cpfInp.value);
+  localStorage.setItem('angel.cpf', cpfRaw);
+  localStorage.setItem('angel.data_nasc', dataInp.value);
+  localStorage.setItem('angel.telefone', onlyDigits(telInp.value));
+  if(emailInp.value) localStorage.setItem('angel.email', emailInp.value.trim());
+  // proceed to OTP
+  window.location.href = 'otp.html';
+});
+
+/* On load, try to set focus on name or phone depending on existing data */
+window.addEventListener('DOMContentLoaded', ()=>{
+  // If name was prefilled but not valid, focus name
+  setTimeout(()=> {
+    if(!validarNome(nomeInp.value)) nomeInp.focus();
+    else if(!localStorage.getItem('angel.telefone')) telInp.focus();
+    validateAll();
+  }, 80);
+});
+
+/* Accessibility: LGPD link shows modal quick summary (simple alert for prototype) */
+document.getElementById('lgpdLink').addEventListener('click', (e)=>{
+  e.preventDefault();
+  alert("Resumo LGPD: Coletamos CPF para validar elegibilidade e proteger seu acesso. Base legal: execução de contrato / legítimo interesse. Revogação e gestão em Perfil > Privacidade.");
+});
+document.getElementById('helpLink').addEventListener('click',(e)=>{ e.preventDefault(); alert('Precisa de ajuda? Contate suporte: suporte@angeltelemed.ex (protótipo)'); });
+
 </script>
 </body>
 </html>
+
