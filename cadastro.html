@@ -1,308 +1,355 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 <title>Angel Telemed — Cadastro Rápido</title>
 <style>
+/* =============== Design System Angel Telemed =============== */
 :root{
-  --brand-blue:#00357A;--brand-green:#00A56F;--muted:#708195;
-  --card:#ffffff;--bg:#F6FAFF;--radius:14px;--shadow:0 10px 24px rgba(13,15,18,.06);
-  --gap:14px;
+  --brand-blue:#00357A;
+  --brand-blue-2:#022A60;
+  --brand-green:#00A56F;
+  --ink:#0B1220;
+  --muted:#718096;
+  --bg:#F6FAFF;
+  --card:#FFFFFF;
+  --radius:16px;
+  --shadow:0 14px 32px rgba(2,42,96,.08);
+  --ok:#17C964;
+  --err:#C62828;
 }
-*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
-body{margin:0;background:var(--bg);color:#0b1220}
-.container{max-width:420px;margin:0 auto;min-height:100vh;padding-bottom:84px;}
-.topbar{background:var(--brand-blue);color:#fff;padding:18px;display:flex;align-items:center;justify-content:space-between}
-.header-title{font-weight:700}
-.greeting{padding:18px}
-.greeting h2{margin:0 0 6px;font-size:20px;color:var(--brand-blue)}
-.greeting p{margin:0;color:var(--muted);font-size:14px}
 
-/* Card-like form */
-.form-card{background:var(--card);margin:12px;padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
-.field{margin-bottom:12px}
-.label{display:block;margin-bottom:6px;font-weight:600;color:#213345}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:400 16px/1.35 "Inter", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+}
+.app{
+  max-width:375px; /* pixel-perfect mobile */
+  margin:0 auto; min-height:100vh; padding-bottom:88px;
+}
+
+/* Topbar */
+.topbar{
+  background:var(--brand-blue);
+  color:#fff; padding:18px 16px; display:flex; justify-content:space-between; align-items:center;
+  font-weight:700;
+}
+.topbar .hello{font-weight:600; opacity:.9}
+
+/* Head */
+.head{padding:16px}
+.head h2{margin:0 0 6px; color:var(--brand-blue-2); font-size:20px}
+.head p{margin:0; color:var(--muted); font-size:14px}
+
+/* Card form */
+.card{
+  background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+  margin:0 12px; padding:16px;
+}
+
+/* Field */
+.field{position:relative; margin-bottom:14px}
+.label{display:block; margin:0 0 6px; font-weight:650; color:#213345}
 .input, .readonly{
-  width:100%;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-size:15px;
+  width:100%; padding:13px 44px 13px 14px; font-size:15px;
+  border-radius:12px; border:1px solid #E6EDF5; background:#fff; outline:none;
+  transition:border-color .2s, box-shadow .2s;
 }
-.readonly{background:#f4f6f8;color:#5b6c7b;border:1px dashed #e6eef6}
-.row{display:flex;gap:10px}
-.small{flex:1}
-.help{font-size:13px;color:var(--muted);margin-top:6px}
-.error{color:#c62828;font-size:13px;margin-top:6px;display:none}
-.checkbox{display:flex;align-items:center;gap:10px}
-.btn{
-  display:block;width:100%;padding:14px;border-radius:12px;border:0;background:var(--brand-green);
-  color:#fff;font-weight:700;font-size:16px;margin:12px 0;cursor:pointer;opacity:1;
-}
-.btn[disabled]{opacity:.5;cursor:not-allowed}
-.meta-company{font-size:13px;color:var(--muted);margin-bottom:10px}
-.inline-links{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--brand-blue);margin-top:6px}
+.input:focus{border-color:#C8DBF3; box-shadow:0 0 0 4px rgba(0,53,122,.08)}
+.readonly{background:#F5F8FB; color:#5B6C7B; border-style:dashed}
 
-/* small responsive */
-@media (max-width:440px){
-  .container{padding:0 10px}
+/* Empresa vinculada */
+.company{font-size:13px; color:var(--muted); margin:0 0 10px}
+
+/* Mensagens */
+.help{font-size:12.5px; color:var(--muted); margin-top:6px}
+.error{display:none; font-size:13px; color:var(--err); margin-top:8px}
+
+/* Check animado (C) */
+.check{
+  position:absolute; right:12px; top:37px; width:22px; height:22px;
+  border-radius:50%; background:rgba(23,201,100,.12); display:none; place-items:center;
 }
+.check svg{width:14px; height:14px; stroke:var(--ok); stroke-width:3; fill:none; stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:26; stroke-dashoffset:26; transition:stroke-dashoffset .45s ease;
+}
+.field.ok .check{display:grid}
+.field.ok .check svg{stroke-dashoffset:0}
+
+/* CTA com progresso (B) */
+.cta{
+  position:sticky; bottom:0; left:0; right:0; background:transparent; margin:16px 12px;
+}
+.btn{
+  width:100%; border:0; border-radius:14px; font-weight:800; color:#fff;
+  padding:16px; background:var(--brand-green); cursor:pointer;
+  position:relative; overflow:hidden; box-shadow:0 12px 24px rgba(0,165,111,.25);
+  transition:transform .05s;
+}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.55; cursor:not-allowed; box-shadow:none}
+
+/* Barra de progresso interna */
+.btn .bar{
+  position:absolute; inset:0; background:rgba(255,255,255,.18); transform-origin:left center;
+  transform:scaleX(0); transition:transform .25s ease;
+}
+.btn .label{position:relative; z-index:1}
+
+/* Links base */
+.links{display:flex; justify-content:space-between; margin-top:8px; font-size:13px}
+.links a{color:var(--brand-blue); text-decoration:none; font-weight:600}
+
+/* Microfix mobile spacing */
+footer{height:10px}
 </style>
 </head>
 <body>
-  <div class="container" role="main">
-    <!-- Top -->
-    <div class="topbar">
-      <div class="header-title">Angel Telemed</div>
-      <div id="top-hello" aria-live="polite">Olá!</div>
-    </div>
+<div class="app">
 
-    <div class="greeting">
-      <h2>Seus dados de cadastro</h2>
-      <p>Confirme e atualize seus dados para ativar sua conta.</p>
-    </div>
-
-    <form id="cadForm" class="form-card" novalidate>
-      <!-- Empresa (não editável) -->
-      <div class="field">
-        <div class="meta-company">Vinculado a <strong id="empresa">—</strong></div>
-      </div>
-
-      <!-- Nome -->
-      <div class="field">
-        <label class="label" for="nome">Nome completo</label>
-        <input id="nome" class="input" type="text" placeholder="Seu nome completo" autocomplete="name" aria-describedby="nomeHelp" />
-        <div id="nomeError" class="error">Informe nome e sobrenome (pelo menos 2 palavras).</div>
-      </div>
-
-      <!-- CPF (block) -->
-      <div class="field">
-        <label class="label" for="cpf">CPF</label>
-        <input id="cpf" class="readonly" type="text" readonly aria-readonly="true" />
-        <div class="help">CPF validado na etapa anterior — não é editável aqui.</div>
-      </div>
-
-      <!-- Data de nascimento -->
-      <div class="field">
-        <label class="label" for="dataNasc">Data de nascimento</label>
-        <input id="dataNasc" class="input" inputmode="numeric" placeholder="DD/MM/AAAA" aria-describedby="dataHelp" />
-        <div id="dataError" class="error">Informe uma data válida (DD/MM/AAAA). Ano mínimo 1900.</div>
-      </div>
-
-      <!-- Telefone (obrigatório) -->
-      <div class="field">
-        <label class="label" for="telefone">Telefone celular (com DDI e DDD)</label>
-        <input id="telefone" class="input" inputmode="tel" placeholder="+55 (99) 9 9999-9999" />
-        <div id="telError" class="error">Telefone inválido. Inclua DDI +55, DDD e 9 dígitos (ex: +55 (48) 99999-9999).</div>
-      </div>
-
-      <!-- E-mail (opcional) -->
-      <div class="field">
-        <label class="label" for="email">E-mail (opcional)</label>
-        <input id="email" class="input" type="email" placeholder="seu.nome@exemplo.com" />
-        <div id="emailError" class="error">E-mail inválido. Ex: nome@dominio.com</div>
-      </div>
-
-      <div class="inline-links">
-        <a href="#" id="lgpdLink">Seus dados são protegidos pela LGPD</a>
-        <a href="#" id="helpLink">Precisa de ajuda?</a>
-      </div>
-
-      <button id="continuar" class="btn" type="submit" disabled>Continuar</button>
-    </form>
-
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>Angel Telemed</div>
+    <div class="hello" id="hello">Olá!</div>
   </div>
 
+  <!-- Head -->
+  <div class="head">
+    <h2>Seus dados de cadastro</h2>
+    <p>Confirme e atualize seus dados para ativar sua conta.</p>
+  </div>
+
+  <!-- Form card -->
+  <form id="form" class="card" novalidate>
+    <p class="company">Vinculado a <strong id="empresaTxt">Angel Corp Saúde Digital</strong></p>
+
+    <!-- Nome -->
+    <div class="field" id="f-nome">
+      <label for="nome" class="label">Nome completo</label>
+      <input id="nome" class="input" type="text" placeholder="Seu nome completo" autocomplete="name"/>
+      <div class="check"><svg viewBox="0 0 16 12"><path d="M1 6l4 4 10-9"/></svg></div>
+      <div class="error" id="e-nome">Informe nome e sobrenome (mín. 2 palavras).</div>
+    </div>
+
+    <!-- CPF (readonly) -->
+    <div class="field">
+      <label for="cpf" class="label">CPF</label>
+      <input id="cpf" class="readonly" type="text" readonly aria-readonly="true"/>
+      <div class="help">CPF validado na etapa anterior — não é editável aqui.</div>
+    </div>
+
+    <!-- Data -->
+    <div class="field" id="f-data">
+      <label for="data" class="label">Data de nascimento</label>
+      <input id="data" class="input" inputmode="numeric" placeholder="DD/MM/AAAA"/>
+      <div class="check"><svg viewBox="0 0 16 12"><path d="M1 6l4 4 10-9"/></svg></div>
+      <div class="error" id="e-data">Informe uma data válida (DD/MM/AAAA). Ano mínimo 1900.</div>
+    </div>
+
+    <!-- Telefone -->
+    <div class="field" id="f-tel">
+      <label for="tel" class="label">Telefone celular (DDI/DDD)</label>
+      <input id="tel" class="input" inputmode="tel" placeholder="(48) 99999-9999 ou +55 (48) 99999-9999"/>
+      <div class="check"><svg viewBox="0 0 16 12"><path d="M1 6l4 4 10-9"/></svg></div>
+      <div class="error" id="e-tel">Telefone inválido. Use DDD + 9 dígitos (ex.: (48) 99999-9999).</div>
+    </div>
+
+    <!-- Email -->
+    <div class="field" id="f-email">
+      <label for="email" class="label">E-mail (opcional)</label>
+      <input id="email" class="input" type="email" placeholder="seu.nome@exemplo.com"/>
+      <div class="check"><svg viewBox="0 0 16 12"><path d="M1 6l4 4 10-9"/></svg></div>
+      <div class="error" id="e-email">E-mail inválido. Ex: nome@dominio.com</div>
+    </div>
+
+    <div class="links">
+      <a href="#" id="lgpd">Seus dados são protegidos pela LGPD</a>
+      <a href="#" id="ajuda">Precisa de ajuda?</a>
+    </div>
+
+    <!-- CTA com progresso -->
+    <div class="cta">
+      <button id="continuar" class="btn" type="submit" disabled>
+        <span class="bar" id="bar"></span>
+        <span class="label">Continuar</span>
+      </button>
+    </div>
+  </form>
+
+  <footer></footer>
+</div>
+
 <script>
-/* ---------- Util / DOM ---------- */
-const nomeInp = document.getElementById('nome');
-const cpfInp = document.getElementById('cpf');
-const dataInp = document.getElementById('dataNasc');
-const telInp = document.getElementById('telefone');
+/* ===================== DOM ===================== */
+const nomeInp  = document.getElementById('nome');
+const cpfInp   = document.getElementById('cpf');
+const dataInp  = document.getElementById('data');
+const telInp   = document.getElementById('tel');
 const emailInp = document.getElementById('email');
-const btn = document.getElementById('continuar');
-const empresaEl = document.getElementById('empresa');
-const topHello = document.getElementById('top-hello');
+const empresaTxt = document.getElementById('empresaTxt');
+const hello   = document.getElementById('hello');
+const btn     = document.getElementById('continuar');
+const bar     = document.getElementById('bar');
 
-const nomeErr = document.getElementById('nomeError');
-const dataErr = document.getElementById('dataError');
-const telErr = document.getElementById('telError');
-const emailErr = document.getElementById('emailError');
+const fNome  = document.getElementById('f-nome');
+const fData  = document.getElementById('f-data');
+const fTel   = document.getElementById('f-tel');
+const fEmail = document.getElementById('f-email');
 
-/* Preenche dados da validação anterior */
-(function prefillFromStorage(){
+const eNome  = document.getElementById('e-nome');
+const eData  = document.getElementById('e-data');
+const eTel   = document.getElementById('e-tel');
+const eEmail = document.getElementById('e-email');
+
+/* ================= Prefill / Empresa / CPF ================= */
+(function prefill(){
   const nome = localStorage.getItem('angel.nome') || '';
   const empresa = localStorage.getItem('angel.empresa') || 'Angel Corp Saúde Digital';
-  const cpf = localStorage.getItem('angel.cpf') || ''; // se tiver sido salvo antes
-  // prefill UI
-  empresaEl.textContent = empresa;
-  topHello.textContent = nome ? 'Olá, ' + nome.split(' ')[0] : 'Olá!';
-  if(nome) nomeInp.value = nome;
-  if(cpf){
-    cpfInp.value = maskCPF(cpf);
-  } else {
-    // tenta obter cpf do localStorage antigo (exemplo)
-    const cpfLocal = localStorage.getItem('cpf_raw') || '';
-    if(cpfLocal) cpfInp.value = maskCPF(cpfLocal);
+  const cpfRaw = (localStorage.getItem('angel.cpf') || localStorage.getItem('cpf_raw') || '').replace(/\D/g,'').slice(0,11);
+
+  empresaTxt.textContent = empresa;
+  if (nome) nomeInp.value = nome;
+  if (cpfRaw) cpfInp.value = maskCPF(cpfRaw);
+
+  // Saudação
+  hello.textContent = nome ? `Olá, ${nome.split(' ')[0]}` : 'Olá!';
+
+  // Autocompletar (B): nome conforme CPF (fictício)
+  if (!nome && cpfRaw.length===11) {
+    const mapa = {
+      '0': 'Luiza Santos',
+      '1': 'Ana Maria Costa',
+      '2': 'João Pedro Almeida',
+      '3': 'Marina Nogueira',
+      '4': 'Rafael Carvalho',
+      '5': 'Carolina Ferreira',
+      '6': 'Daniela Rocha',
+      '7': 'Felipe Prado',
+      '8': 'Larissa Martins',
+      '9': 'Bruno Moreira'
+    };
+    const sugestao = mapa[cpfRaw.at(-1)] || 'Luiza Santos';
+    nomeInp.value = sugestao;
+    localStorage.setItem('angel.nome', sugestao);
+    hello.textContent = `Olá, ${sugestao.split(' ')[0]}`;
   }
 })();
 
-/* ---------- Máscaras e Validações ---------- */
+/* =================== Máscaras =================== */
 function maskCPF(v){
-  v = (v || '').replace(/\D/g,'').slice(0,11);
-  return v.replace(/(\d{3})(\d)/,'$1.$2')
+  return v.replace(/\D/g,'').slice(0,11)
+          .replace(/(\d{3})(\d)/,'$1.$2')
           .replace(/(\d{3})(\d)/,'$1.$2')
           .replace(/(\d{3})(\d{1,2})$/,'$1-$2');
 }
-function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-
 function maskDate(v){
   v = v.replace(/\D/g,'').slice(0,8);
-  v = v.replace(/(\d{2})(\d)/,'$1/$2').replace(/(\d{2})(\d{1,2})$/,'$1/$2');
+  if (v.length>=5) return v.replace(/(\d{2})(\d{2})(\d{1,4})/, "$1/$2/$3");
+  if (v.length>=3) return v.replace(/(\d{2})(\d{1,2})/, "$1/$2");
   return v;
 }
 function maskTel(v){
-  v = v.replace(/\D/g,'').slice(0,13); // allow +55 + ddd + 9 digits = up to 13
-  // We'll format as +55 (DD) 9XXXX-XXXX or fallback
-  // if it already has country code 55 at start assume that
-  // Try simple formatting:
-  let d = v;
-  if(d.startsWith('55')) d = '+' + d;
-  if(d.startsWith('+55') && d.length>=4){
-    let rest = d.slice(3);
-    rest = rest.replace(/\D/g,'');
-    if(rest.length<=2) return '+55 ('+rest;
-    if(rest.length<=7) return '+55 ('+rest.slice(0,2)+') '+rest.slice(2);
-    return '+55 ('+rest.slice(0,2)+') '+rest.slice(2,7)+'-'+rest.slice(7,11);
-  }
-  // fallback insert +55 if short
-  return '+' + v;
+  // aceita (48) 99999-9999 ou +55 (48) 99999-9999
+  let d = v.replace(/\D/g,'');
+  // remove 55 se veio com DDI para compor exibição
+  if (d.startsWith('55')) d = d.slice(2);
+  d = d.slice(0,11);
+  if (d.length<=2) return `(${d}`;
+  if (d.length<=7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+  return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
 }
 
-/* Validadores */
-function validarNome(val){
-  if(!val) return false;
-  const parts = val.trim().split(/\s+/);
-  return parts.length >= 2 && parts.every(p=>p.length>=2);
-}
-function validarData(val){
-  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(val)) return false;
-  const [dd,mm,aaaa] = val.split('/').map(Number);
-  if(aaaa < 1900 || mm <1 || mm>12 || dd<1 || dd>31) return false;
-  const date = new Date(aaaa, mm-1, dd);
-  return (date.getFullYear()===aaaa && date.getMonth()===mm-1 && date.getDate()===dd);
-}
-function validarTelefone(val){
-  const d = onlyDigits(val);
-  // Accepts with 55 country: 55 + DDD(2) + 9 digits = 13 digits OR if leading plus removed
-  if(d.startsWith('55')) return d.length === 13;
-  // If user typed without country but with DDD+9digits (11)
-  return d.length === 11;
-}
-function validarEmail(val){
-  if(!val) return true; // optional
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-  return re.test(val);
-}
+dataInp.addEventListener('input', e=>{ e.target.value = maskDate(e.target.value); });
+telInp.addEventListener('input', e=>{ e.target.value = maskTel(e.target.value); });
 
-/* ---------- Eventos UI ---------- */
-// masks on typing
-dataInp.addEventListener('input', (e)=> {
-  const v = maskDate(e.target.value);
-  e.target.value = v;
-  validateAll();
+/* =================== Validações =================== */
+const valNome  = v => v.trim().split(/\s+/).length >= 2;
+const valData  = v => {
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(v)) return false;
+  const [dd,mm,yy] = v.split('/').map(Number);
+  const dt = new Date(yy, mm-1, dd);
+  return yy>=1900 && dt.getFullYear()===yy && dt.getMonth()===(mm-1) && dt.getDate()===dd;
+};
+const valTel   = v => v.replace(/\D/g,'').length === 11; // DDD + 9 dígitos
+const valEmail = v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(v);
+
+/* Mostrar erro apenas no blur / submit */
+function attachBlur(input, field, errEl, validator){
+  input.addEventListener('blur', ()=>{
+    const ok = validator(input.value);
+    errEl.style.display = ok ? 'none':'block';
+    field.classList.toggle('ok', ok);
+    updateProgress();
+  });
+}
+attachBlur(nomeInp,  fNome,  eNome,  valNome);
+attachBlur(dataInp,  fData,  eData,  valData);
+attachBlur(telInp,   fTel,   eTel,   valTel);
+attachBlur(emailInp, fEmail, eEmail, valEmail);
+
+/* =================== Progresso CTA (B) =================== */
+function updateProgress(){
+  const ok1 = valNome(nomeInp.value);
+  const ok2 = valData(dataInp.value);
+  const ok3 = valTel(telInp.value);
+  const ok4 = valEmail(emailInp.value);
+  const total = ok1 + ok2 + ok3 + ok4; // booleans -> 0/1
+  const pct = total/4;
+
+  // barra interna
+  bar.style.transform = `scaleX(${pct})`;
+
+  // estado do botão
+  btn.disabled = pct < 0.75 || !ok1 || !ok2 || !ok3 || !ok4; // exige todos válidos
+}
+['input','blur'].forEach(ev=>{
+  nomeInp.addEventListener(ev, updateProgress);
+  dataInp.addEventListener(ev, updateProgress);
+  telInp.addEventListener(ev, updateProgress);
+  emailInp.addEventListener(ev, updateProgress);
 });
-telInp.addEventListener('input', (e)=>{
-  // try to maintain readable if starts with + or digits
-  const v = e.target.value.replace(/\D/g,'');
-  // if user typed starting with 55, keep that; else assume they type DDD + number
-  // We'll display as +55 (DD) 9....
-  let shown = v;
-  if(v.length>0 && v.length<=2) shown = '+' + v;
-  if(v.length>2 && v.slice(0,2)==='55') shown = maskTel(v);
-  else if(v.length>0) shown = '+' + v;
-  e.target.value = shown;
-  validateAll();
+updateProgress();
+
+/* =================== LGPD / Ajuda =================== */
+document.getElementById('lgpd').addEventListener('click', e=>{
+  e.preventDefault();
+  alert("LGPD — Coletamos dados mínimos (CPF, nome, telefone, e-mail opcional e data) para validar elegibilidade e ativar seu acesso. Base legal: execução de contrato/legítimo interesse. Você pode gerenciar consentimentos em Perfil > Privacidade.");
 });
-emailInp.addEventListener('input', ()=> validateAll());
-nomeInp.addEventListener('input', ()=> validateAll());
+document.getElementById('ajuda').addEventListener('click', e=>{
+  e.preventDefault();
+  alert("Suporte Angel Telemed (protótipo)\n\nWhatsApp: +55 48 99999-0000\nE-mail: suporte@angeltelemed.ex");
+});
 
-/* If cpf not masked in localstorage, ensure visual mask remains */
-(function ensureCpfMask(){
-  // if cpf input already has digits without mask, mask it
-  const raw = cpfInp.value.replace(/\D/g,'');
-  if(raw) cpfInp.value = maskCPF(raw);
-})();
+/* =================== Submit =================== */
+document.getElementById('form').addEventListener('submit', e=>{
+  e.preventDefault();
 
-/* ---------- Form validation flow ---------- */
-function validateAll(){
-  let ok = true;
-
-  // Nome
-  if(!validarNome(nomeInp.value)){
-    nomeErr.style.display = 'block';
-    ok = false;
-  } else { nomeErr.style.display = 'none'; }
-
-  // Data
-  if(!validarData(dataInp.value)){
-    dataErr.style.display = 'block';
-    ok = false;
-  } else { dataErr.style.display = 'none'; }
-
-  // Telefone
-  if(!validarTelefone(telInp.value)){
-    telErr.style.display = 'block';
-    ok = false;
-  } else { telErr.style.display = 'none'; }
-
-  // Email (optional)
-  if(!validarEmail(emailInp.value)){
-    emailErr.style.display = 'block';
-    ok = false;
-  } else { emailErr.style.display = 'none'; }
-
-  btn.disabled = !ok;
-  return ok;
-}
-
-/* on submit */
-document.getElementById('cadForm').addEventListener('submit', function(ev){
-  ev.preventDefault();
-  if(!validateAll()){
-    // focus first invalid
-    if(nomeErr.style.display==='block') nomeInp.focus();
-    else if(dataErr.style.display==='block') dataInp.focus();
-    else if(telErr.style.display==='block') telInp.focus();
-    else if(emailErr.style.display==='block') emailInp.focus();
-    return;
+  // força validar e mostrar o primeiro erro, se houver
+  const checks = [
+    [nomeInp,  fNome,  eNome,  valNome],
+    [dataInp,  fData,  eData,  valData],
+    [telInp,   fTel,   eTel,   valTel],
+    [emailInp, fEmail, eEmail, valEmail],
+  ];
+  for(const [inp, fld, err, fn] of checks){
+    const ok = fn(inp.value);
+    err.style.display = ok ? 'none':'block';
+    fld.classList.toggle('ok', ok);
+    if(!ok){ inp.focus(); updateProgress(); return; }
   }
-  // Save to localStorage for next steps
+
+  // save
   localStorage.setItem('angel.nome', nomeInp.value.trim());
-  // store raw cpf digits too (without punctuation)
-  const cpfRaw = onlyDigits(cpfInp.value);
-  localStorage.setItem('angel.cpf', cpfRaw);
   localStorage.setItem('angel.data_nasc', dataInp.value);
-  localStorage.setItem('angel.telefone', onlyDigits(telInp.value));
+  localStorage.setItem('angel.telefone', telInp.value.replace(/\D/g,''));
   if(emailInp.value) localStorage.setItem('angel.email', emailInp.value.trim());
-  // proceed to OTP
+
+  // segue para OTP
   window.location.href = 'otp.html';
 });
-
-/* On load, try to set focus on name or phone depending on existing data */
-window.addEventListener('DOMContentLoaded', ()=>{
-  // If name was prefilled but not valid, focus name
-  setTimeout(()=> {
-    if(!validarNome(nomeInp.value)) nomeInp.focus();
-    else if(!localStorage.getItem('angel.telefone')) telInp.focus();
-    validateAll();
-  }, 80);
-});
-
-/* Accessibility: LGPD link shows modal quick summary (simple alert for prototype) */
-document.getElementById('lgpdLink').addEventListener('click', (e)=>{
-  e.preventDefault();
-  alert("Resumo LGPD: Coletamos CPF para validar elegibilidade e proteger seu acesso. Base legal: execução de contrato / legítimo interesse. Revogação e gestão em Perfil > Privacidade.");
-});
-document.getElementById('helpLink').addEventListener('click',(e)=>{ e.preventDefault(); alert('Precisa de ajuda? Contate suporte: suporte@angeltelemed.ex (protótipo)'); });
-
 </script>
 </body>
 </html>
