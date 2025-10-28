@@ -1,118 +1,146 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angel Telemed — Primeiro acesso</title>
-<link rel="stylesheet" href="assets/css/style.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Angel Telemed — Validar CPF</title>
+<style>
+:root{
+  --brand-blue:#00357A;
+  --brand-green:#00A56F;
+  --bg:#F6FAFF;
+  --ink:#122033;
+  --radius:16px;
+}
+
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink)}
+
+.container{
+  max-width:375px;margin:0 auto;padding:40px 18px;text-align:center;
+}
+
+/* Campo CPF */
+.input{
+  width:100%;padding:14px;font-size:18px;border-radius:14px;
+  border:2px solid #DCE6F2;outline:none;text-align:center;
+}
+.input:focus{border-color:#B8D3F3}
+
+/* Botão */
+.btn{
+  margin-top:20px;width:100%;padding:16px;
+  font-size:18px;font-weight:700;
+  border-radius:14px;border:0;
+  background:var(--brand-green);color:#fff;
+  cursor:pointer;opacity:.5;
+}
+.btn.active{opacity:1}
+
+/* Modal Energia Vital */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);
+  display:none;align-items:center;justify-content:center;
+  z-index:999;
+}
+.modal{
+  width:220px;height:220px;background:#fff;border-radius:20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;overflow:hidden;position:relative;
+}
+
+@keyframes pulseA {
+  0% {transform:scale(.9); opacity:.45}
+  50% {transform:scale(1.08); opacity:.85}
+  100% {transform:scale(.9); opacity:.45}
+}
+
+/* Círculo animado estilo Nubank */
+.loader{
+  width:110px;height:110px;
+  border-radius:50%;
+  background: radial-gradient(circle at center,
+    var(--brand-green) 0%, #2BE3AE 100%);
+  animation:pulseA 1.5s infinite ease-in-out;
+  box-shadow:0 0 28px rgba(2,165,111,.55),
+             0 0 60px rgba(2,165,111,.28);
+}
+
+/* Texto */
+#loadText{
+  font-weight:700;font-size:15px;
+  color:var(--brand-blue); text-align:center;padding:0 12px;
+}
+</style>
 </head>
+
 <body>
-<div class="app">
-  <div class="topbar">
-    <img src="assets/img/icon-back.svg" alt="Voltar" class="back" onclick="history.back()">
-    <div class="title">Primeiro acesso</div>
-  </div>
 
-  <div class="main">
-    <div class="welcome">
-      <img src="assets/img/icon-welcome.svg" alt="" width="28" height="28">
-      <h1>Boas-vindas!</h1>
-    </div>
-    <p class="lead">
-      Para sua segurança e acesso ao seu prontuário, confirme o CPF cadastrado.
-    </p>
+<div class="container">
+  <h2>Confirme seu CPF para começar</h2>
+  <p>Para sua segurança e acesso ao seu prontuário</p>
 
-    <label for="cpf">CPF</label>
-    <input id="cpf" class="input" type="text" placeholder="000.000.000-00" aria-label="Digite seu CPF">
-    <div id="cpf-err" class="helper">CPF inválido. Confira os números.</div>
+  <input id="cpf" class="input" maxlength="14" placeholder="000.000.000-00"/>
 
-    <!-- Consentimento obrigatório -->
-    <div class="row" style="margin-top:18px;">
-      <input id="lgpd" type="checkbox">
-      <label for="lgpd" style="font-size:13px;">
-        Declaro que li e aceito os
-        <a href="#" id="open-lgpd">Termos de Uso</a> e a
-        <a href="#" id="open-lgpd2">Política de Privacidade</a>.
-      </label>
-    </div>
-    <div id="lgpd-err" class="helper">É necessário aceitar os Termos e Política para continuar.</div>
-
-    <!-- Consentimento opcional -->
-    <div class="row" style="margin-top:10px;">
-      <input id="optin" type="checkbox">
-      <label for="optin" class="muted" style="font-size:13px;">
-        Quero receber avisos e novidades por WhatsApp/E-mail.
-      </label>
-    </div>
-
-    <div class="row" style="margin:14px 0 0;">
-      <a href="#" id="lgpd-modal-link" class="muted">Política de privacidade</a>
-      <div style="flex:1;"></div>
-      <a href="https://wa.me/5500000000000" class="muted">Precisa de ajuda?</a>
-    </div>
-
-    <button id="btn-next" class="btn btn-primary" disabled>Continuar</button>
-  </div>
+  <button id="btn" class="btn" disabled>Continuar</button>
 </div>
 
-<!-- Modal simples LGPD -->
-<div id="lgpd-bg" class="modal-bg">
+<!-- Modal Energia Vital -->
+<div class="modal-bg" id="modal">
   <div class="modal">
-    <span id="lgpd-close" class="close">×</span>
-    <h3>Como usamos seus dados (LGPD)</h3>
-    <p>Coletamos CPF para validar elegibilidade e proteger seu acesso clínico. Você pode revogar consentimentos de marketing a qualquer momento.</p>
-    <a href="#" target="_blank">Ler política completa</a>
+    <div class="loader"></div>
+    <div id="loadText">Estamos validando seu CPF...</div>
   </div>
 </div>
 
-<script type="module">
-  import {maskCPF, cpfIsValid, bindLgpdModal} from './assets/js/app.js';
+<script>
+const cpf = document.getElementById("cpf");
+const btn = document.getElementById("btn");
+const modal = document.getElementById("modal");
+const txt = document.getElementById("loadText");
 
-  const cpf = document.getElementById('cpf');
-  const errCpf = document.getElementById('cpf-err');
-  const btn = document.getElementById('btn-next');
-  const lgpd = document.getElementById('lgpd');
-  const optin = document.getElementById('optin');
-  const errLgpd = document.getElementById('lgpd-err');
+cpf.addEventListener("input",()=>{
+  let v = cpf.value.replace(/\D/g,"").slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,"$1.$2")
+       .replace(/(\d{3})(\d)/,"$1.$2")
+       .replace(/(\d{3})(\d{1,2})$/,"$1-$2");
 
-  function validate() {
-    cpf.value = maskCPF(cpf.value);
-    const cpfOk = cpf.value.replace(/\D/g, '').length === 11 && cpfIsValid(cpf.value);
-    const lgpdOk = lgpd.checked;
+  cpf.value = v;
+  btn.disabled = (v.replace(/\D/g,'').length !== 11);
+  btn.classList.toggle("active", !btn.disabled);
+});
 
-    btn.disabled = !(cpfOk && lgpdOk);
+btn.addEventListener("click",()=>{
+  const cpfRaw = cpf.value.replace(/\D/g,"");
 
-    errCpf.classList.toggle('show', !cpfOk && cpf.value.length >= 14);
-    errLgpd.classList.toggle('show', !lgpdOk && cpfOk);
+  localStorage.setItem("angel.cpf", cpfRaw);
 
-    return cpfOk && lgpdOk;
+  // inicia modal
+  modal.style.display="flex";
+
+  // simula busca com API
+  if(cpfRaw.startsWith("999")){
+    txt.textContent="CPF não localizado...";
+    setTimeout(()=>{
+      alert("Seu CPF não está ativo no momento.\nPor favor, procure seu RH.");
+      modal.style.display="none";
+    },2500);
+    return;
   }
 
-  cpf.addEventListener('input', validate);
-  lgpd.addEventListener('change', validate);
-  optin.addEventListener('change', () => {
-    console.log('marketing_optin_toggle', { on: optin.checked });
-  });
+  // animação premium com 2 textos
+  txt.textContent="Estamos validando seu CPF...";
+  setTimeout(()=>{txt.textContent="Encontrando sua empresa..."},1300);
 
-  btn.addEventListener('click', () => {
-    if (!validate()) return;
-    
-    console.log('consent_privacy_accept', { timestamp: Date.now() });
-    console.log('onboarding_cpf_submit', { valid: true });
-
-    localStorage.setItem('angel.cpf', cpf.value);
-    localStorage.setItem('angel.optin', optin.checked);
-
-    if (cpf.value.startsWith('999')) {
-      location.href = 'cpf-nao.html';
-    } else {
-      location.href = 'cadastro.html';
-    }
-  });
-
-  bindLgpdModal();
-  console.log('onboarding_cpf_view');
+  // final → cadastro
+  setTimeout(()=>{
+    // define empresa fictícia
+    localStorage.setItem("angel.empresa","Angel Corp Saúde Digital");
+    window.location.href="cadastro.html";
+  },3000);
+});
 </script>
+
 </body>
 </html>
 
