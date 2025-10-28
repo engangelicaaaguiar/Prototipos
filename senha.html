@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Angel Telemed — Criar senha</title>
 <link rel="stylesheet" href="assets/css/style.css">
+
 <style>
   .error {
     color: #c0392b;
@@ -13,6 +14,7 @@
     display: none;
   }
   .show { display: block; }
+
   .password-box {
     position: relative;
     width: 100%;
@@ -25,7 +27,35 @@
     top: 12px;
     right: 12px;
   }
+
+  /* ✅ NOVO — Modal premium */
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(0,0,0,.65);
+    display:none;align-items:center;justify-content:center;z-index:9999;
+  }
+  .modal{
+    width:240px;height:240px;background:#ffffff;border-radius:22px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:20px;position:relative;overflow:hidden;padding:20px;
+    text-align:center;
+  }
+  .loader{
+    width:120px;height:120px;border-radius:50%;
+    background: radial-gradient(circle at center, #00A56F 0%, #2BE3AE 95%);
+    animation:pulseA 1.5s infinite ease-in-out;
+    box-shadow:0 0 28px rgba(2,165,111,.55),
+               0 0 60px rgba(2,165,111,.28);
+  }
+  @keyframes pulseA {
+    0% {transform:scale(.9); opacity:.45}
+    50% {transform:scale(1.1); opacity:1}
+    100% {transform:scale(.9); opacity:.45}
+  }
+  #loadMsg{
+    font-weight:700;font-size:16px;color:#00357A;
+  }
 </style>
+
 </head>
 <body>
 
@@ -55,6 +85,14 @@
 
     <button id="btn-final" class="btn btn-primary" disabled>Finalizar cadastro</button>
 
+  </div>
+</div>
+
+<!-- ✅ NOVO — Modal Energia Vital -->
+<div id="loadingModal" class="modal-bg">
+  <div class="modal">
+    <div class="loader"></div>
+    <div id="loadMsg">Configurando sua proteção digital…</div>
   </div>
 </div>
 
@@ -113,6 +151,32 @@
   p1.addEventListener("input", validate);
   p2.addEventListener("input", validate);
 
+  /* ✅ NOVO — Modal + Timer + Redirect */
+  function showLoadingModal(){
+    const modal = document.getElementById("loadingModal");
+    const msg = document.getElementById("loadMsg");
+    modal.style.display = "flex";
+
+    let texts = [
+      "Configurando sua proteção digital…",
+      "Preparando seu cuidado com tecnologia…",
+      "Organizando seus dados com segurança…",
+      "Prontuário pronto para te receber…"
+    ];
+
+    let i = 0;
+    const step = setInterval(()=>{
+      msg.textContent = texts[i];
+      i++;
+      if(i === texts.length){
+        clearInterval(step);
+        setTimeout(()=>{
+          window.location.href = "conclusao.html";
+        }, 600);
+      }
+    }, 800);
+  }
+
   btn.addEventListener("click", () => {
     const novaSenha = p1.value.trim();
 
@@ -123,9 +187,10 @@
 
     console.log("password_submit", { success: true });
 
-    location.href = "conclusao.html";
+    showLoadingModal(); // ✅ CHAMA O MODAL AQUI
   });
 </script>
 
 </body>
 </html>
+
